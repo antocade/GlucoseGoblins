@@ -10,20 +10,20 @@ export function NavBar({navigation}) {
         
         <View style={{flexDirection:'row', justifyContent:'flex-end'}}>
             <Pressable style={NBStyle.square} onPress={() => navigation.navigate("Store")}>
-                <View >
-                    <Entypo name="shop" size={44} color="red" />
+                <View style={{justifyContent:'center', alignItems:'center'}} >
+                    <Entypo name="shop" size={40} color="red" />
                     <Text style={NBStyle.text}>Shop</Text>
                 </View>
             </Pressable >
             <Pressable style={NBStyle.square} onPress={() => navigation.navigate("Goblin")}>
-                <View >
-                    <Entypo name="home" size={44} color="red" />
+                <View  style={{justifyContent:'center', alignItems:'center'}}>
+                    <Entypo name="home" size={40} color="red" />
                     <Text  style={NBStyle.text}>Home</Text>
                 </View>
             </Pressable >
             <Pressable style={NBStyle.square} onPress={() => navigation.navigate("Settings")}>
-                <View >
-                    <FontAwesome name="gear" size={44} color="red" />
+                <View style={{justifyContent:'center', alignItems:'center'}}>
+                    <FontAwesome name="gear" size={40} color="red" />
                     <Text  style={NBStyle.text}>Settings</Text>
                 </View >
             </Pressable >
@@ -43,6 +43,7 @@ const NBStyle = StyleSheet.create({
         borderColor:'red',
         alignItems:'center',
         justifyContent:'center',
+        verticalAlign:'center'
     }
 
 

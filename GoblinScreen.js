@@ -6,40 +6,40 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { NavBar } from './NavBar';
 import {useState} from 'react'
-
 import Constants from "expo-constants";
+
 function BloodSugarCircle() {
     return(
-        <View style={GSStyles.bloodSugarCircle}>
-            <Text style={GSStyles.bloodSugarText}>4.00 ML</Text>
-            <Text style={GSStyles.gainPointsText}>+3 Points</Text>
+        <View style={GoblinScreenStyles.bloodSugarCircle}>
+            <Text style={GoblinScreenStyles.bloodSugarText}>4.00 ML</Text>
+            <Text style={GoblinScreenStyles.gainPointsText}>+3 Points</Text>
         </View>
     );
 }
 
 function FeedCircle() {
     return(
-        <View style={GSStyles.smallCircle}>
+        <View style={GoblinScreenStyles.smallCircle}>
             <FontAwesome5 name="pizza-slice" size={24} color="red" />
-            <Text style={GSStyles.gainPointsText}>Feed</Text>
+            <Text style={GoblinScreenStyles.gainPointsText}>Feed</Text>
         </View>
     );
 }
 
 function PlayCircle() {
     return(
-        <View style={GSStyles.smallCircle}>
+        <View style={GoblinScreenStyles.smallCircle}>
             <FontAwesome name="soccer-ball-o" size={24} color="red" />
-            <Text style={GSStyles.gainPointsText}>Play</Text>
+            <Text style={GoblinScreenStyles.gainPointsText}>Play</Text>
         </View>
     );
 }
 
 function BatheCircle() {
     return(
-        <View style={GSStyles.smallCircle}>
+        <View style={GoblinScreenStyles.smallCircle}>
             <FontAwesome name="bathtub" size={24} color="red" />
-            <Text style={GSStyles.gainPointsText}>Bathe</Text>
+            <Text style={GoblinScreenStyles.gainPointsText}>Bathe</Text>
         </View>
     );
 }
@@ -48,16 +48,16 @@ export function GoblinScreen({ navigation }) {
     const [goblinName, setGoblinName] = useState('Bartholomew');
 
     return(
-        <View style={GSStyles.container}>
-            <ScrollView  contentContainerStyle={GSStyles.container}>
+        <View style={GoblinScreenStyles.container}>
+            <ScrollView  contentContainerStyle={GoblinScreenStyles.container}>
             <BloodSugarCircle></BloodSugarCircle>
             <View style={{flexDirection:'row', gap:10}}>
                 <FeedCircle></FeedCircle>
                 <PlayCircle></PlayCircle>
                 <BatheCircle></BatheCircle>
             </View>
-            <Image style={GSStyles.goblinImage} source={require('./Images/cuteghost.png')}></Image>
-            <TextInput style={GSStyles.goblinName} onChangeText={setGoblinName} value={goblinName}></TextInput>
+            <Image style={GoblinScreenStyles.goblinImage} source={require('./Images/cuteghost.png')}></Image>
+            <TextInput style={GoblinScreenStyles.goblinName} onChangeText={setGoblinName} value={goblinName}></TextInput>
             </ScrollView>
             <NavBar navigation={navigation}></NavBar>
             <StatusBar style="auto" backgroundColor="black"></StatusBar>
@@ -65,7 +65,7 @@ export function GoblinScreen({ navigation }) {
     );
 }
 
-const GSStyles = StyleSheet.create({
+const GoblinScreenStyles = StyleSheet.create({
     container: {
       flex: 1,
       marginTop: Constants.statusBarHeight,
