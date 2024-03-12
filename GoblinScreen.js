@@ -21,7 +21,8 @@ function BloodSugarCircle() {
   return (
     <View style={GoblinScreenStyles.bloodSugarCircle}>
       <Text style={GoblinScreenStyles.bloodSugarText}>4.0 ML</Text>
-      <Text style={GoblinScreenStyles.gainPointsText}>+3 Points</Text>
+      <Text style={GoblinScreenStyles.gainPointsText}>10 Points</Text>
+      <Text style={GoblinScreenStyles.addPointsText}>+3 Points/Min</Text>
     </View>
   );
 }
@@ -170,7 +171,7 @@ export function GoblinScreen({ navigation }) {
       <View style={{ position: "absolute", bottom: 0 }}>
         <NavBar navigation={navigation}></NavBar>
       </View>
-      <StatusBar style="auto" backgroundColor="black"></StatusBar>
+      <StatusBar style="auto" backgroundColor="#e1d5c9"></StatusBar>
     </View>
   );
 }
@@ -210,6 +211,10 @@ const GoblinScreenStyles = StyleSheet.create({
   gainPointsText: {
     color: "#222425",
     fontSize: 30,
+  },
+  addPointsText: {
+    color: "#222425",
+    fontSize: 15,
   },
   goblinImage: {
     width: 300,

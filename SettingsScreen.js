@@ -70,7 +70,7 @@ export function SettingsScreen({navigation}) {
         </View>
       </ScrollView>
       <NavBar navigation={navigation}></NavBar>
-      <StatusBar style="auto" backgroundColor="black"></StatusBar>
+      <StatusBar style="auto" backgroundColor="#e1d5c9"></StatusBar>
   </View>  
     );
 }
