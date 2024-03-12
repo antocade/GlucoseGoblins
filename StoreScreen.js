@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       justifyContent: 'space-around',
       padding: 10,
-      paddingTop: 30,
+      paddingTop: 60,
       backgroundColor: '#e1d5c9', 
     },
     headerButton: {

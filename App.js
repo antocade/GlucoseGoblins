@@ -9,7 +9,7 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-        <Stack.Navigator initialRouteName="Goblin" screenOptions={{ headerShown: false }}>
+        <Stack.Navigator initialRouteName="Goblin" screenOptions={{ animation:'none',headerShown: false }}>
           <Stack.Screen name="Goblin" component={GoblinScreen} />
           <Stack.Screen name="Store" component={StoreScreen}/>
           <Stack.Screen name="Settings" component={SettingsScreen}/>

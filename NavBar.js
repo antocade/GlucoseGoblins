@@ -7,8 +7,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 export function NavBar({navigation}) {
     return(
-        
-        <View style={{flexDirection:'row', justifyContent:'flex-end'}}>
+        <View style={{flexDirection:'row', justifyContent:'flex-end', width:'100%'}}>
             <Pressable style={NBStyle.square} onPress={() => navigation.navigate("Store")}>
                 <View style={{justifyContent:'center', alignItems:'center'}} >
                     <Entypo name="shop" size={40} color="#c3924f" />

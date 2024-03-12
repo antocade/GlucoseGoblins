@@ -139,7 +139,10 @@ const SettingScreenStyles = StyleSheet.create({
     width:'75%',
     height:100,
     color:'#222425',
-    
+    alignItems:'center',
+    justifyContent:'center',
+    fontSize:20,
+    textAlign:'center'
   },
 
   smallCircle: {
@@ -149,7 +152,8 @@ const SettingScreenStyles = StyleSheet.create({
       height: 110,
       borderRadius: 110/2,
       justifyContent:'center',
-      alignItems:'center'
+      alignItems:'center',
+
   },
 
   bloodSugarText: {
