@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, ScrollView, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView, TextInput, Animated } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -11,7 +11,7 @@ import Constants from "expo-constants";
 function BloodSugarCircle() {
     return(
         <View style={GoblinScreenStyles.bloodSugarCircle}>
-            <Text style={GoblinScreenStyles.bloodSugarText}>4.00 ML</Text>
+            <Text style={GoblinScreenStyles.bloodSugarText}>4.0 ML</Text>
             <Text style={GoblinScreenStyles.gainPointsText}>+3 Points</Text>
         </View>
     );
@@ -20,7 +20,7 @@ function BloodSugarCircle() {
 function FeedCircle() {
     return(
         <View style={GoblinScreenStyles.smallCircle}>
-            <FontAwesome5 name="pizza-slice" size={24} color="red" />
+            <FontAwesome5 name="pizza-slice" size={24} color="#c3924f" />
             <Text style={GoblinScreenStyles.gainPointsText}>Feed</Text>
         </View>
     );
@@ -29,7 +29,7 @@ function FeedCircle() {
 function PlayCircle() {
     return(
         <View style={GoblinScreenStyles.smallCircle}>
-            <FontAwesome name="soccer-ball-o" size={24} color="red" />
+            <FontAwesome name="soccer-ball-o" size={24} color="#c3924f" />
             <Text style={GoblinScreenStyles.gainPointsText}>Play</Text>
         </View>
     );
@@ -38,7 +38,7 @@ function PlayCircle() {
 function BatheCircle() {
     return(
         <View style={GoblinScreenStyles.smallCircle}>
-            <FontAwesome name="bathtub" size={24} color="red" />
+            <FontAwesome name="bathtub" size={24} color="#c3924f" />
             <Text style={GoblinScreenStyles.gainPointsText}>Bathe</Text>
         </View>
     );
@@ -56,7 +56,7 @@ export function GoblinScreen({ navigation }) {
                 <PlayCircle></PlayCircle>
                 <BatheCircle></BatheCircle>
             </View>
-            <Image style={GoblinScreenStyles.goblinImage} source={require('./Images/cuteghost.png')}></Image>
+            <Image style={GoblinScreenStyles.goblinImage} source={require('./assets/cuteghost.png')}></Image>
             <TextInput style={GoblinScreenStyles.goblinName} onChangeText={setGoblinName} value={goblinName}></TextInput>
             </ScrollView>
             <NavBar navigation={navigation}></NavBar>
@@ -70,10 +70,10 @@ const GoblinScreenStyles = StyleSheet.create({
       flex: 1,
       marginTop: Constants.statusBarHeight,
       alignItems:'center',
-      backgroundColor:'black',
+      backgroundColor:'#e1d5c9',
     },
     bloodSugarCircle: {
-        borderColor:'red',
+        borderColor:'#222425',
         borderWidth:10,
         width: 200,
         height: 200,
@@ -84,7 +84,7 @@ const GoblinScreenStyles = StyleSheet.create({
     },
 
     smallCircle: {
-        borderColor:'red',
+        borderColor:'#222425',
         borderWidth:10,
         width: 110,
         height: 110,
@@ -94,11 +94,11 @@ const GoblinScreenStyles = StyleSheet.create({
     },
 
     bloodSugarText: {
-        color:'red',
+        color:'#222425',
         fontSize:40,
     },
     gainPointsText: {
-        color:'red',
+        color:'#222425',
         fontSize:30,
     },
     goblinImage : {
@@ -107,7 +107,7 @@ const GoblinScreenStyles = StyleSheet.create({
     },
     goblinName: {
         fontSize:30,
-        color:'red'
+        color:'#222425'
     }
 
   });

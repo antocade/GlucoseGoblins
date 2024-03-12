@@ -11,19 +11,19 @@ export function NavBar({navigation}) {
         <View style={{flexDirection:'row', justifyContent:'flex-end'}}>
             <Pressable style={NBStyle.square} onPress={() => navigation.navigate("Store")}>
                 <View style={{justifyContent:'center', alignItems:'center'}} >
-                    <Entypo name="shop" size={40} color="red" />
+                    <Entypo name="shop" size={40} color="#c3924f" />
                     <Text style={NBStyle.text}>Shop</Text>
                 </View>
             </Pressable >
             <Pressable style={NBStyle.square} onPress={() => navigation.navigate("Goblin")}>
                 <View  style={{justifyContent:'center', alignItems:'center'}}>
-                    <Entypo name="home" size={40} color="red" />
+                    <Entypo name="home" size={40} color="#c3924f" />
                     <Text  style={NBStyle.text}>Home</Text>
                 </View>
             </Pressable >
             <Pressable style={NBStyle.square} onPress={() => navigation.navigate("Settings")}>
                 <View style={{justifyContent:'center', alignItems:'center'}}>
-                    <FontAwesome name="gear" size={40} color="red" />
+                    <FontAwesome name="gear" size={40} color="#c3924f" />
                     <Text  style={NBStyle.text}>Settings</Text>
                 </View >
             </Pressable >
@@ -34,17 +34,15 @@ export function NavBar({navigation}) {
 const NBStyle = StyleSheet.create({
     text:{
         fontSize:20,
-        color:'red'
+        color:'#222425'
     },
     square: {
         height:100,
         flex:1,
         borderWidth:2,
-        borderColor:'red',
+        borderColor:'#222425',
         alignItems:'center',
         justifyContent:'center',
         verticalAlign:'center'
     }
-
-
   });

@@ -79,11 +79,11 @@ const SettingScreenStyles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: Constants.statusBarHeight,
-    backgroundColor:'black',
+    backgroundColor:'#e1d5c9',
     gap:20
   },
   bloodSugarCircle: {
-      borderColor:'red',
+      borderColor:'#222425',
       borderWidth:10,
       width: 200,
       height: 200,
@@ -94,17 +94,17 @@ const SettingScreenStyles = StyleSheet.create({
   },
 
   mediumText: {
-    color:'red',
+    color:'#222425',
     fontSize:30
   },
 
   buttonText: {
-    color:'red',
+    color:'#222425',
     fontSize:20
   },
 
   bigButton: {
-    borderColor:'red',
+    borderColor:'#222425',
     borderWidth:2,
     width:300,
     height:50,
@@ -114,7 +114,7 @@ const SettingScreenStyles = StyleSheet.create({
 
   
   button: {
-    borderColor:'red',
+    borderColor:'#222425',
     borderWidth:2,
     width:150,
     height:50,
@@ -123,7 +123,7 @@ const SettingScreenStyles = StyleSheet.create({
   },
 
   pressedButton: {
-    borderColor:'red',
+    borderColor:'#222425',
     backgroundColor:'gray',
     borderWidth:2,
     width:150,
@@ -134,16 +134,16 @@ const SettingScreenStyles = StyleSheet.create({
 
 
   inputBar: {
-    borderColor:'red',
+    borderColor:'#222425',
     borderWidth:2,
     width:'75%',
     height:100,
-    color:'red',
+    color:'#222425',
     
   },
 
   smallCircle: {
-      borderColor:'red',
+      borderColor:'#222425',
       borderWidth:10,
       width: 110,
       height: 110,
@@ -153,11 +153,11 @@ const SettingScreenStyles = StyleSheet.create({
   },
 
   bloodSugarText: {
-      color:'red',
+      color:'#222425',
       fontSize:40,
   },
   gainPointsText: {
-      color:'red',
+      color:'#222425',
       fontSize:30,
   },
   goblinImage : {
@@ -166,7 +166,7 @@ const SettingScreenStyles = StyleSheet.create({
   },
   goblinName: {
       fontSize:30,
-      color:'red'
+      color:'#222425'
   }
 
 });
