@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavBar } from './NavBar';
 import {useState} from 'react'
 import Constants from "expo-constants";
+import useGoblinStore from "./GoblinStore"
 
 function BloodSugarUnitsToggle({bloodSugarUnits, setBloodSugarUnits}){
     if(bloodSugarUnits == 0){
@@ -43,8 +44,9 @@ function BloodSugarUnitsToggle({bloodSugarUnits, setBloodSugarUnits}){
 
 
 export function SettingsScreen({navigation}) {
-    const [apiLink, setApiLink] = useState('');
     const [bloodSugarUnits, setBloodSugarUnits] = useState(0);
+    const apiLink = useGoblinStore((state) => state.apiLink)
+    const setApiLink = useGoblinStore((state) => state.setApiLink)
     
 
     return (

@@ -16,29 +16,18 @@ import { Ionicons } from "@expo/vector-icons";
 import { NavBar } from "./NavBar";
 import { useEffect, useRef, useState } from "react";
 import Constants from "expo-constants";
-import {useGoblinStore} from "./GoblinStore"
+import useGoblinStore from "./GoblinStore"
 
-function BloodSugarCircle() {
+function BloodSugarCircle(props) {
   return (
     <View style={GoblinScreenStyles.bloodSugarCircle}>
-      <Text style={GoblinScreenStyles.bloodSugarText}>4.0 ML</Text>
+      <Text style={GoblinScreenStyles.bloodSugarText}>{props.bloodSugar} ML</Text>
       <Text style={GoblinScreenStyles.gainPointsText}>10 Points</Text>
       <Text style={GoblinScreenStyles.addPointsText}>+3 Points/Min</Text>
     </View>
   );
 }
 
- async function FetchBloodSugarNumber() {
-  try{
-    const apiLink = useGoblinStore((state) => state.apiLink);
-    const response = await fetch(apiLink+"/api/v1/entries")
-    const json = await response.json();
-    return json.sgv;
-  }
-  catch(e){
-    console.log(e);
-  }
-}
 
 function FeedCircle() {
   return (
@@ -76,7 +65,8 @@ export function GoblinScreen({ navigation }) {
   const [goblinName, setGoblinName] = useState("Bartholomew");
   const coolposition = useRef(new Animated.ValueXY(0, 0)).current;
   const animateScaleX = useRef(new Animated.Value(1)).current;
-  [bloodSugar, setBloodSugar] = useState(0)
+  const apiLink = useGoblinStore((state) => state.apiLink)
+  const [bloodSugar, setBloodSugar] = useState(0)
 
   useEffect(() => {
     Animated.loop(
@@ -156,14 +146,30 @@ export function GoblinScreen({ navigation }) {
   }, []);
 
   useEffect(() => {
+    
+    async function FetchBloodSugarNumber() {
+      try{
+        const response = await fetch(apiLink+"api/v1/entries.json")
+        const json = await response.json();
+        console.log(json)
+        return 0;
+      }
+      catch(e){
+        console.log(e);
+        return 0
+      }
+    }
+
     const interval = setInterval(() => {
       setBloodSugar(FetchBloodSugarNumber())
     }, 5000);
+    
+    return () => clearInterval(interval); 
   }, []);
 
   return (
     <View style={GoblinScreenStyles.container}>
-      <BloodSugarCircle></BloodSugarCircle>
+      <BloodSugarCircle bloodSugar={bloodSugar}></BloodSugarCircle>
       <View style={{ flexDirection: "row", gap: 10 }}>
         <FeedCircle></FeedCircle>
         <PlayCircle></PlayCircle>

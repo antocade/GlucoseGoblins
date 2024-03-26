@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 
 const useGoblinStore = create((set) => ({
-  points: 0,
+  points: 500,
   apiLink:"",
   items: null,
 
@@ -9,3 +9,5 @@ const useGoblinStore = create((set) => ({
   setApiLink: (string) => set((state) => ({ apiLink: string })),
   decreasePoints: (number) => set((state) => ({ points: state.points - number })),
 }))
+
+export default useGoblinStore;
