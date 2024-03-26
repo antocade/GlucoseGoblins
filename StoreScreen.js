@@ -40,7 +40,6 @@ export function StoreScreen({navigation}) {
           else{
             points = points - cost;
             decreasePoints(cost);
-            console.log(points);
           }
         }},
       ]
@@ -60,7 +59,7 @@ export function StoreScreen({navigation}) {
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
       <Image source={item.picture} style={styles.itemImage} />
-      <Text style={styles.itemText}>{`${item.itemName} - $${item.cost}`}</Text>
+      <Text style={styles.itemText}>{`${item.itemName} - ${item.cost}`}</Text>
       <TouchableOpacity
         style={styles.buyButton}
         onPress={() => onBuyItem(item.itemName, item.cost)}>
@@ -71,13 +70,17 @@ export function StoreScreen({navigation}) {
 
   return (
     <View style={styles.container}>
+
+      <View style={styles.pointsCounter}>
+        <Text style={styles.pointsText}>Points: {points}</Text>
+      </View>
       {/* Header */}
       <View style={styles.header}>
         <HeaderButton title="Food" />
         <HeaderButton title="Clothing" />
         <HeaderButton title="Toys" />
       </View>
-
+    
       {/* Content */}
       <FlatList
         data={filteredData}
@@ -95,12 +98,23 @@ const styles = StyleSheet.create({
       flex: 1,
       backgroundColor: '#e1d5c9', 
     },
+    pointsCounter: {
+      backgroundColor: '#e1d5c9', // Adjust the background color as needed
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingTop: Constants.statusBarHeight + 10, // Ensure it's not covered by the status bar
+    },
+    pointsText: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: '#222425', // Adjust the text color as needed
+    },
+    // Adjust the padding of the header to make space for the points counter if necessary
     header: {
       flexDirection: 'row',
-      justifyContent: 'space-around', 
+      justifyContent: 'space-around',
       padding: 10,
-      paddingTop: 60,
-      backgroundColor: '#e1d5c9', 
+      backgroundColor: '#e1d5c9',
     },
     headerButton: {
       padding: 10,

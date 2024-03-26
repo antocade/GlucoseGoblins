@@ -1,0 +1,17 @@
+{
+   "food": {
+    "pizza": {"name": "Pizza", "amount": 0, "hunger": 25},
+    "soda": {"name": "Soda", "amount": 0, "hunger": 15},
+    "sandwich": {"name": "Sandwich", "amount": 0, "hunger": 30},
+    "steak": {"name": "Steak", "amount": 0, "hunger": 80}
+   },
+   "clothing": {
+    "hat": {"name": "Cowboy Hat", "picture": "./assets/cowboy.jpg"},
+    "glasses": {"name": "Cool Sunglasses", "picture": "./assets/glasses.jpg"}
+   },
+   "toys": {
+    "ball": {"name": "Ball", "amount": 0, "play": 25},
+    "yo-yo": {"name": "Yo-Yo", "amount": 0, "play": 15},
+    "ipad": {"name": "Ipad", "amount": 0, "play": 100}
+   }
+}
