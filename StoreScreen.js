@@ -7,34 +7,28 @@ import { FontAwesome } from '@expo/vector-icons';
 import { NavBar } from './NavBar';
 import {useState} from 'react'
 import Constants from "expo-constants";
-
+import {useGoblinStore} from "./GoblinStore"
 
 export function StoreScreen({navigation}) {
     const [selectedHeader, setSelectedHeader] = useState('Food');
 
-  const mockData = [
-    ...new Array(10).fill(null).map((_, index) => ({
-      id: String(index),
-      title: `Food Item ${index + 1}                     100pts`,
-      category: 'Food',
-      image: require('./assets/shop1.jpg'), 
-    })),
-    ...new Array(10).fill(null).map((_, index) => ({
-      id: String(index + 7),
-      title: `Clothing Item ${index + 1}                     100pts`,
-      category: 'Clothing',
-      image: require('./assets/shop2.jpg'), 
-    })),
-    ...new Array(10).fill(null).map((_, index) => ({
-      id: String(index + 14),
-      title: `Toy Item ${index + 1}                     100pts`,
-      category: 'Toys',
-      image: require('./assets/shop3.jpg'), 
-    })),
-  ];
+  function storeItem(itemName, cost, picture){
+    this.itemName = itemName;
+    this.cost = cost;
+    this.picture = picture;
+  }
 
   const filteredData = mockData.filter(item => item.category === selectedHeader);
-
+  const onBuyItem = (itemName, cost) => {
+    Alert.alert(
+      "Buy Item",
+      'Are you sure you want to buy ${itemName} for $${cost}?',
+      [
+        {text: "Cancel", style: "cancel"},
+        {text: "Yes", onPress: () => console.log("BOUGHT")},
+      ]
+    );
+  };
   const HeaderButton = ({ title }) => (
     <TouchableOpacity
       style={[styles.headerButton, selectedHeader === title && styles.selectedHeaderButton]}
@@ -73,8 +67,6 @@ export function StoreScreen({navigation}) {
     </View>
   );
 }
-
-
 
 const styles = StyleSheet.create({
     container: {

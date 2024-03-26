@@ -16,6 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { NavBar } from "./NavBar";
 import { useEffect, useRef, useState } from "react";
 import Constants from "expo-constants";
+import {useGoblinStore} from "./GoblinStore"
 
 function BloodSugarCircle() {
   return (
@@ -25,6 +26,18 @@ function BloodSugarCircle() {
       <Text style={GoblinScreenStyles.addPointsText}>+3 Points/Min</Text>
     </View>
   );
+}
+
+ async function FetchBloodSugarNumber() {
+  try{
+    const apiLink = useGoblinStore((state) => state.apiLink);
+    const response = await fetch(apiLink+"/api/v1/entries")
+    const json = await response.json();
+    return json.sgv;
+  }
+  catch(e){
+    console.log(e);
+  }
 }
 
 function FeedCircle() {
@@ -63,6 +76,7 @@ export function GoblinScreen({ navigation }) {
   const [goblinName, setGoblinName] = useState("Bartholomew");
   const coolposition = useRef(new Animated.ValueXY(0, 0)).current;
   const animateScaleX = useRef(new Animated.Value(1)).current;
+  [bloodSugar, setBloodSugar] = useState(0)
 
   useEffect(() => {
     Animated.loop(
@@ -139,6 +153,12 @@ export function GoblinScreen({ navigation }) {
         }),
       ])
     ).start();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBloodSugar(FetchBloodSugarNumber())
+    }, 5000);
   }, []);
 
   return (
