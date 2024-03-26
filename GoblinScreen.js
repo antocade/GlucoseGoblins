@@ -151,7 +151,6 @@ export function GoblinScreen({ navigation }) {
       try{
         const response = await fetch(apiLink+"api/v1/entries.json")
         const json = await response.json();
-        console.log(json)
         return 0;
       }
       catch(e){
@@ -161,7 +160,11 @@ export function GoblinScreen({ navigation }) {
     }
 
     const interval = setInterval(() => {
-      setBloodSugar(FetchBloodSugarNumber())
+      let number = FetchBloodSugarNumber()
+      if(number > 0){
+        setBloodSugar(number)
+      }
+      
     }, 5000);
     
     return () => clearInterval(interval); 
