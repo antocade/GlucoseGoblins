@@ -44,7 +44,8 @@ function BloodSugarUnitsToggle({bloodSugarUnits, setBloodSugarUnits}){
 
 
 export function SettingsScreen({navigation}) {
-    const [bloodSugarUnits, setBloodSugarUnits] = useState(0);
+    const bloodSugarUnits = useGoblinStore((state) => state.bloodSugarUnits)
+    const setBloodSugarUnits = useGoblinStore((state) => state.setBloodSugarUnits)
     const apiLink = useGoblinStore((state) => state.apiLink)
     const setApiLink = useGoblinStore((state) => state.setApiLink)
     

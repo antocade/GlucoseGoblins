@@ -8,6 +8,7 @@ import {
   TextInput,
   Animated,
   KeyboardAvoidingView,
+  Alert,
   Platform,
 } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -16,18 +17,25 @@ import { Ionicons } from "@expo/vector-icons";
 import { NavBar } from "./NavBar";
 import { useEffect, useRef, useState } from "react";
 import Constants from "expo-constants";
-import useGoblinStore from "./GoblinStore"
+import useGoblinStore from "./GoblinStore";
 
 function BloodSugarCircle(props) {
   return (
     <View style={GoblinScreenStyles.bloodSugarCircle}>
-      <Text style={GoblinScreenStyles.bloodSugarText}>{props.bloodSugar} ML</Text>
-      <Text style={GoblinScreenStyles.gainPointsText}>10 Points</Text>
-      <Text style={GoblinScreenStyles.addPointsText}>+3 Points/Min</Text>
+      {props.bloodSugarUnits==0 ? <Text style={GoblinScreenStyles.bloodSugarText}>
+        {ConvertBloodSugarToMMOL(props.bloodSugar)} mmol/L
+      </Text> : <Text style={GoblinScreenStyles.bloodSugarText}>
+        {props.bloodSugar} mg/dl
+      </Text> } 
+      <Text style={GoblinScreenStyles.gainPointsText}>
+        {props.points} Points
+      </Text>
+      <Text style={GoblinScreenStyles.addPointsText}>
+        {props.pointsPM} Points/5Min
+      </Text>
     </View>
   );
 }
-
 
 function FeedCircle() {
   return (
@@ -53,6 +61,10 @@ function BatheCircle() {
   );
 }
 
+function ConvertBloodSugarToMMOL(bloodSugar){
+  return Math.round(bloodSugar * 0.0555)
+}
+
 function StatsCircle() {
   return (
     <View style={GoblinScreenStyles.smallCircle}>
@@ -61,27 +73,62 @@ function StatsCircle() {
   );
 }
 
-
 export function GoblinScreen({ navigation }) {
   const [goblinName, setGoblinName] = useState("Bartholomew");
   const coolposition = useRef(new Animated.ValueXY(0, 0)).current;
   const animateScaleX = useRef(new Animated.Value(1)).current;
-  const apiLink = useGoblinStore((state) => state.apiLink)
-  const refresh = useGoblinStore((state) => state.refresh)
-  const setRefresh = useGoblinStore((state) => state.setRefresh)
-  const [bloodSugar, setBloodSugar] = useState(0)
+  const apiLink = useGoblinStore((state) => state.apiLink);
+  const refresh = useGoblinStore((state) => state.refresh);
+  const setRefresh = useGoblinStore((state) => state.setRefresh);
+  const points = useGoblinStore((state) => state.points);
+  const increasePoints = useGoblinStore((state) => state.increasePoints);
+  const bloodSugarUnits = useGoblinStore((state) => state.bloodSugarUnits);
+  const [bloodSugar, setBloodSugar] = useState(0);
+  const [pointsPM, setPointsPM] = useState(0);
+
+  if (apiLink == "") {
+    Alert.alert(
+      "Error No API Link Entered",
+      "No API Link has been entered. Please enter it in on the settings page.",
+      [
+        {
+          text: "Accept",
+          onPress: () => {
+            navigation.navigate("Settings");
+          },
+          style: "accept",
+        },
+      ],
+      {
+        cancelable: true,
+        onDismiss: () => {
+          navigation.navigate("Settings");
+        },
+      }
+    );
+  }
 
   async function FetchBloodSugarNumber() {
-    try{
-      const response = await fetch(apiLink+"api/v1/entries.json")
+    try {
+      const response = await fetch(apiLink + "api/v1/entries.json");
       const json = await response.json();
-      setBloodSugar(json[0].sgv)
-    }
-    catch(e){
-      setBloodSugar(0)
+      console.log(json[0].sgv)
+      setBloodSugar(json[0].sgv);
+    } catch (e) {
+      console.log("API FAILED")
     }
   }
-  
+
+  function GetPointsPerMinute() {
+    convertedBloodSugar = ConvertBloodSugarToMMOL({bloodSugar})
+    if (convertedBloodSugar <= 8 && convertedBloodSugar >= 4) {
+      setPointsPM(10)
+    } else if (convertedBloodSugar <= 12 && convertedBloodSugar >= 8.1) {
+      setPointsPM(5)
+    } else {
+      setPointsPM(1)
+    }
+  }
 
   useEffect(() => {
     Animated.loop(
@@ -162,24 +209,32 @@ export function GoblinScreen({ navigation }) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      FetchBloodSugarNumber()
-    }, 50000);
-    
-    return () => clearInterval(interval); 
+      FetchBloodSugarNumber();
+      GetPointsPerMinute();
+      increasePoints(pointsPM);
+    }, 300000);
+
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
-    if(refresh){
-      console.log("REFRESHED")
-      FetchBloodSugarNumber()
-      setRefresh(false)
+    if (refresh) {
+      console.log("REFRESHED");
+      FetchBloodSugarNumber();
+      GetPointsPerMinute();
+      increasePoints(pointsPM);
+      setRefresh(false);
     }
   }, [refresh]);
 
-
   return (
     <View style={GoblinScreenStyles.container}>
-      <BloodSugarCircle bloodSugar={bloodSugar}></BloodSugarCircle>
+      <BloodSugarCircle
+        bloodSugar={bloodSugar}
+        points={points}
+        pointsPM={pointsPM}
+        bloodSugarUnits={bloodSugarUnits}
+      ></BloodSugarCircle>
       <View style={{ flexDirection: "row", gap: 10 }}>
         <FeedCircle></FeedCircle>
         <PlayCircle></PlayCircle>
@@ -222,9 +277,9 @@ const GoblinScreenStyles = StyleSheet.create({
   bloodSugarCircle: {
     borderColor: "#222425",
     borderWidth: 10,
-    width: 200,
-    height: 200,
-    borderRadius: 200 / 2,
+    width: 230,
+    height: 230,
+    borderRadius: 230 / 2,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 10,
@@ -242,7 +297,7 @@ const GoblinScreenStyles = StyleSheet.create({
 
   bloodSugarText: {
     color: "#222425",
-    fontSize: 40,
+    fontSize: 35,
   },
   gainPointsText: {
     color: "#222425",
@@ -250,7 +305,7 @@ const GoblinScreenStyles = StyleSheet.create({
   },
   addPointsText: {
     color: "#222425",
-    fontSize: 15,
+    fontSize: 20,
   },
   goblinImage: {
     width: 300,
