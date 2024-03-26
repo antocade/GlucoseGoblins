@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, ScrollView, TextInput, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView, TextInput, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -8,10 +8,10 @@ import { NavBar } from './NavBar';
 import {useState} from 'react'
 import Constants from "expo-constants";
 import {useGoblinStore} from "./GoblinStore"
-
+import mockData from './mockData'; 
 export function StoreScreen({navigation}) {
-    const [selectedHeader, setSelectedHeader] = useState('Food');
-
+  const [selectedHeader, setSelectedHeader] = useState('Food');
+  
   function storeItem(itemName, cost, picture){
     this.itemName = itemName;
     this.cost = cost;
@@ -22,7 +22,7 @@ export function StoreScreen({navigation}) {
   const onBuyItem = (itemName, cost) => {
     Alert.alert(
       "Buy Item",
-      'Are you sure you want to buy ${itemName} for $${cost}?',
+      'Are you sure you want to buy ' + itemName + ' for ' + cost + '?',
       [
         {text: "Cancel", style: "cancel"},
         {text: "Yes", onPress: () => console.log("BOUGHT")},
@@ -42,8 +42,13 @@ export function StoreScreen({navigation}) {
 
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
-      <Image source={item.image} style={styles.itemImage} />
-      <Text style={styles.itemText}>{item.title}</Text>
+      <Image source={item.picture} style={styles.itemImage} />
+      <Text style={styles.itemText}>{`${item.itemName} - $${item.cost}`}</Text>
+      <TouchableOpacity
+        style={styles.buyButton}
+        onPress={() => onBuyItem(item.itemName, item.cost)}>
+        <Text style={styles.buyButtonText}>Buy</Text>
+      </TouchableOpacity>
     </View>
   );
 
@@ -75,7 +80,7 @@ const styles = StyleSheet.create({
     },
     header: {
       flexDirection: 'row',
-      justifyContent: 'space-around',
+      justifyContent: 'space-around', 
       padding: 10,
       paddingTop: 60,
       backgroundColor: '#e1d5c9', 
@@ -120,5 +125,16 @@ const styles = StyleSheet.create({
       height: 50, 
       marginRight: 10, 
       borderRadius: 25, 
+    },
+    buyButton: {
+      backgroundColor: '#c3924f',
+      padding: 10,
+      borderRadius: 5,
+      marginLeft: 'auto', // Pushes the button to the right
+    },
+    buyButtonText: {
+        color: '#ffffff',
+        fontSize: 16,
+        fontWeight: 'bold',
     },
   });
