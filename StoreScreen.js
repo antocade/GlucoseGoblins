@@ -7,11 +7,13 @@ import { FontAwesome } from '@expo/vector-icons';
 import { NavBar } from './NavBar';
 import {useState} from 'react'
 import Constants from "expo-constants";
-import {useGoblinStore} from "./GoblinStore"
+import useGoblinStore from "./GoblinStore"
 import mockData from './mockData'; 
+
 export function StoreScreen({navigation}) {
   const [selectedHeader, setSelectedHeader] = useState('Food');
-  
+  let points = useGoblinStore((state) => state.points);
+  const decreasePoints = useGoblinStore((state) => state.decreasePoints);
   function storeItem(itemName, cost, picture){
     this.itemName = itemName;
     this.cost = cost;
@@ -25,7 +27,22 @@ export function StoreScreen({navigation}) {
       'Are you sure you want to buy ' + itemName + ' for ' + cost + '?',
       [
         {text: "Cancel", style: "cancel"},
-        {text: "Yes", onPress: () => console.log("BOUGHT")},
+        {text: "Yes", onPress: () => {
+          if(cost > points){
+            Alert.alert(
+              "Insufficient Funds",
+              'You do not have enough points for this',
+              [
+                {text: "Okay", style: "okay"}
+              ]
+            )
+          }
+          else{
+            points = points - cost;
+            decreasePoints(cost);
+            console.log(points);
+          }
+        }},
       ]
     );
   };
