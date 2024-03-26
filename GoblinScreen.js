@@ -61,6 +61,7 @@ function StatsCircle() {
   );
 }
 
+
 export function GoblinScreen({ navigation }) {
   const [goblinName, setGoblinName] = useState("Bartholomew");
   const coolposition = useRef(new Animated.ValueXY(0, 0)).current;
@@ -69,6 +70,18 @@ export function GoblinScreen({ navigation }) {
   const refresh = useGoblinStore((state) => state.refresh)
   const setRefresh = useGoblinStore((state) => state.setRefresh)
   const [bloodSugar, setBloodSugar] = useState(0)
+
+  async function FetchBloodSugarNumber() {
+    try{
+      const response = await fetch(apiLink+"api/v1/entries.json")
+      const json = await response.json();
+      setBloodSugar(json[0].sgv)
+    }
+    catch(e){
+      setBloodSugar(0)
+    }
+  }
+  
 
   useEffect(() => {
     Animated.loop(
@@ -148,28 +161,21 @@ export function GoblinScreen({ navigation }) {
   }, []);
 
   useEffect(() => {
-    if(refresh){
-      FetchBloodSugarNumber()
-      setRefresh(false)
-    }
-
-    async function FetchBloodSugarNumber() {
-      try{
-        const response = await fetch(apiLink+"api/v1/entries.json")
-        const json = await response.json();
-        setBloodSugar(json[0].sgv)
-      }
-      catch(e){
-        return 0
-      }
-    }
-
     const interval = setInterval(() => {
       FetchBloodSugarNumber()
     }, 50000);
     
     return () => clearInterval(interval); 
   }, []);
+
+  useEffect(() => {
+    if(refresh){
+      console.log("REFRESHED")
+      FetchBloodSugarNumber()
+      setRefresh(false)
+    }
+  }, [refresh]);
+
 
   return (
     <View style={GoblinScreenStyles.container}>
