@@ -19,59 +19,6 @@ import { useEffect, useRef, useState } from "react";
 import Constants from "expo-constants";
 import useGoblinStore from "./GoblinStore";
 
-function BloodSugarCircle(props) {
-  return (
-    <View style={GoblinScreenStyles.bloodSugarCircle}>
-      {props.bloodSugarUnits==0 ? <Text style={GoblinScreenStyles.bloodSugarText}>
-        {ConvertBloodSugarToMMOL(props.bloodSugar)} mmol/L
-      </Text> : <Text style={GoblinScreenStyles.bloodSugarText}>
-        {props.bloodSugar} mg/dl
-      </Text> } 
-      <Text style={GoblinScreenStyles.gainPointsText}>
-        {props.points} Points
-      </Text>
-      <Text style={GoblinScreenStyles.addPointsText}>
-        {props.pointsPM} Points/5Min
-      </Text>
-    </View>
-  );
-}
-
-function FeedCircle() {
-  return (
-    <View style={GoblinScreenStyles.smallCircle}>
-      <FontAwesome5 name="pizza-slice" size={24} color="#c3924f" />
-    </View>
-  );
-}
-
-function PlayCircle() {
-  return (
-    <View style={GoblinScreenStyles.smallCircle}>
-      <FontAwesome name="soccer-ball-o" size={24} color="#c3924f" />
-    </View>
-  );
-}
-
-function BatheCircle() {
-  return (
-    <View style={GoblinScreenStyles.smallCircle}>
-      <FontAwesome name="bathtub" size={24} color="#c3924f" />
-    </View>
-  );
-}
-
-function ConvertBloodSugarToMMOL(bloodSugar){
-  return Math.round(bloodSugar * 0.0555)
-}
-
-function StatsCircle() {
-  return (
-    <View style={GoblinScreenStyles.smallCircle}>
-      <Ionicons name="stats-chart" size={24} color="#c3924f" />
-    </View>
-  );
-}
 
 export function GoblinScreen({ navigation }) {
   const [goblinName, setGoblinName] = useState("Bartholomew");
@@ -85,8 +32,9 @@ export function GoblinScreen({ navigation }) {
   const bloodSugarUnits = useGoblinStore((state) => state.bloodSugarUnits);
   const [bloodSugar, setBloodSugar] = useState(0);
   const [pointsPM, setPointsPM] = useState(0);
+  const [firstLoad, setFirstLoad] = useState(true)
 
-  if (apiLink == "") {
+  if (apiLink == "" && firstLoad) {
     Alert.alert(
       "Error No API Link Entered",
       "No API Link has been entered. Please enter it in on the settings page.",
@@ -106,9 +54,67 @@ export function GoblinScreen({ navigation }) {
         },
       }
     );
+    setFirstLoad(false)
+  }
+
+  function BloodSugarCircle(props) {
+    return (
+      <View style={GoblinScreenStyles.bloodSugarCircle}>
+        {props.bloodSugarUnits==0 ? <Text style={GoblinScreenStyles.bloodSugarText}>
+          {ConvertBloodSugarToMMOL(props.bloodSugar)} mmol/L
+        </Text> : <Text style={GoblinScreenStyles.bloodSugarText}>
+          {props.bloodSugar} mg/dl
+        </Text> } 
+        <Text style={GoblinScreenStyles.gainPointsText}>
+          {props.points} Points
+        </Text>
+        <Text style={GoblinScreenStyles.addPointsText}>
+          {props.pointsPM} Points/5Min
+        </Text>
+      </View>
+    );
+  }
+  
+  function FeedCircle() {
+    return (
+      <View style={GoblinScreenStyles.smallCircle}>
+        <FontAwesome5 name="pizza-slice" size={24} color="#c3924f" />
+      </View>
+    );
+  }
+  
+  function PlayCircle() {
+    return (
+      <View style={GoblinScreenStyles.smallCircle}>
+        <FontAwesome name="soccer-ball-o" size={24} color="#c3924f" />
+      </View>
+    );
+  }
+  
+  function BatheCircle() {
+    return (
+      <View style={GoblinScreenStyles.smallCircle}>
+        <FontAwesome name="bathtub" size={24} color="#c3924f" />
+      </View>
+    );
+  }
+  
+  function StatsCircle() {
+    return (
+      <View style={GoblinScreenStyles.smallCircle}>
+        <Ionicons name="stats-chart" size={24} color="#c3924f" />
+      </View>
+    );
+  }
+  
+
+  function ConvertBloodSugarToMMOL(bloodSugar){
+    let convertedBloodSugar = Math.round(bloodSugar * 0.0555)
+    return convertedBloodSugar
   }
 
   async function FetchBloodSugarNumber() {
+    console.log(apiLink)
     try {
       const response = await fetch(apiLink + "api/v1/entries.json");
       const json = await response.json();
@@ -120,7 +126,8 @@ export function GoblinScreen({ navigation }) {
   }
 
   function GetPointsPerMinute() {
-    convertedBloodSugar = ConvertBloodSugarToMMOL({bloodSugar})
+    convertedBloodSugar = ConvertBloodSugarToMMOL(bloodSugar)
+    console.log(convertedBloodSugar)
     if (convertedBloodSugar <= 8 && convertedBloodSugar >= 4) {
       setPointsPM(10)
     } else if (convertedBloodSugar <= 12 && convertedBloodSugar >= 8.1) {
@@ -212,7 +219,7 @@ export function GoblinScreen({ navigation }) {
       FetchBloodSugarNumber();
       GetPointsPerMinute();
       increasePoints(pointsPM);
-    }, 300000);
+    }, 500000);
 
     return () => clearInterval(interval);
   }, []);
@@ -222,7 +229,6 @@ export function GoblinScreen({ navigation }) {
       console.log("REFRESHED");
       FetchBloodSugarNumber();
       GetPointsPerMinute();
-      increasePoints(pointsPM);
       setRefresh(false);
     }
   }, [refresh]);
