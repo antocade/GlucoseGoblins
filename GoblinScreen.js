@@ -66,6 +66,8 @@ export function GoblinScreen({ navigation }) {
   const coolposition = useRef(new Animated.ValueXY(0, 0)).current;
   const animateScaleX = useRef(new Animated.Value(1)).current;
   const apiLink = useGoblinStore((state) => state.apiLink)
+  const refresh = useGoblinStore((state) => state.refresh)
+  const setRefresh = useGoblinStore((state) => state.setRefresh)
   const [bloodSugar, setBloodSugar] = useState(0)
 
   useEffect(() => {
@@ -146,6 +148,11 @@ export function GoblinScreen({ navigation }) {
   }, []);
 
   useEffect(() => {
+    if(refresh){
+      FetchBloodSugarNumber()
+      setRefresh(false)
+    }
+
     async function FetchBloodSugarNumber() {
       try{
         const response = await fetch(apiLink+"api/v1/entries.json")
