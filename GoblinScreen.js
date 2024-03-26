@@ -146,26 +146,20 @@ export function GoblinScreen({ navigation }) {
   }, []);
 
   useEffect(() => {
-    
     async function FetchBloodSugarNumber() {
       try{
         const response = await fetch(apiLink+"api/v1/entries.json")
         const json = await response.json();
-        return 0;
+        setBloodSugar(json[0].sgv)
       }
       catch(e){
-        console.log(e);
         return 0
       }
     }
 
     const interval = setInterval(() => {
-      let number = FetchBloodSugarNumber()
-      if(number > 0){
-        setBloodSugar(number)
-      }
-      
-    }, 5000);
+      FetchBloodSugarNumber()
+    }, 50000);
     
     return () => clearInterval(interval); 
   }, []);
