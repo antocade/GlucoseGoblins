@@ -30,6 +30,12 @@ export function GoblinScreen({ navigation }) {
   const points = useGoblinStore((state) => state.points);
   const increasePoints = useGoblinStore((state) => state.increasePoints);
   const bloodSugarUnits = useGoblinStore((state) => state.bloodSugarUnits);
+  const hunger = useGoblinStore((state) => state.hunger);
+  const play = useGoblinStore((state) => state.play);
+  const cleanliness = useGoblinStore((state) => state.cleanliness);
+  const decreaseHunger = useGoblinStore((state) => state.decreaseHunger);
+  const decreasePlay = useGoblinStore((state) => state.decreasePlay);
+  const decreaseCleanliness = useGoblinStore((state) => state.decreaseCleanliness);
   const [bloodSugar, setBloodSugar] = useState(0);
   const [pointsPM, setPointsPM] = useState(0);
   const [firstLoad, setFirstLoad] = useState(true)
@@ -76,24 +82,32 @@ export function GoblinScreen({ navigation }) {
   }
   
   function FeedCircle() {
+    let percentage = hunger + "%"
+      
     return (
-      <View style={GoblinScreenStyles.smallCircle}>
+      <View style={[GoblinScreenStyles.smallCircle, {zIndex:10}]}>
+        <View style={[GoblinScreenStyles.circleFill, { height:percentage, zIndex:0}]} />
         <FontAwesome5 name="pizza-slice" size={24} color="#c3924f" />
+       
       </View>
     );
   }
   
   function PlayCircle() {
+    let percentage = play + "%"
     return (
       <View style={GoblinScreenStyles.smallCircle}>
+        <View style={[GoblinScreenStyles.circleFill, { height:percentage, zIndex:0}]} />
         <FontAwesome name="soccer-ball-o" size={24} color="#c3924f" />
       </View>
     );
   }
   
   function BatheCircle() {
+    let percentage = cleanliness + "%"
     return (
       <View style={GoblinScreenStyles.smallCircle}>
+        <View style={[GoblinScreenStyles.circleFill, { height:percentage, zIndex:0}]} />
         <FontAwesome name="bathtub" size={24} color="#c3924f" />
       </View>
     );
@@ -118,7 +132,6 @@ export function GoblinScreen({ navigation }) {
     try {
       const response = await fetch(apiLink + "api/v1/entries.json");
       const json = await response.json();
-      console.log(json[0].sgv)
       setBloodSugar(json[0].sgv);
     } catch (e) {
       console.log("API FAILED")
@@ -219,6 +232,9 @@ export function GoblinScreen({ navigation }) {
       FetchBloodSugarNumber();
       GetPointsPerMinute();
       increasePoints(pointsPM);
+      decreaseCleanliness(5);
+      decreaseHunger(5);
+      decreasePlay(5);
     }, 500000);
 
     return () => clearInterval(interval);
@@ -299,6 +315,7 @@ const GoblinScreenStyles = StyleSheet.create({
     borderRadius: 90 / 2,
     justifyContent: "center",
     alignItems: "center",
+    overflow: 'hidden'
   },
 
   bloodSugarText: {
@@ -321,4 +338,12 @@ const GoblinScreenStyles = StyleSheet.create({
     fontSize: 30,
     color: "#222425",
   },
+  circleFill: {
+    backgroundColor: 'lightgreen',
+    width: '100%',
+    bottom: 0,
+    position: 'absolute',
+    
+    overflow: 'hidden'
+  }
 });

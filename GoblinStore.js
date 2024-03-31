@@ -14,6 +14,9 @@ const useGoblinStore = create((set) => ({
   setApiLink: (string) => set((state) => ({ apiLink: string, refresh: true })),
   setRefresh: (string) => set((state) => ({ refresh: string })),
   decreasePoints: (number) => set((state) => ({ points: state.points - number })),
+  decreaseHunger: (number) => set((state) => ({ hunger: state.hunger - number })),
+  decreasePlay: (number) => set((state) => ({ play: state.play - number })),
+  decreaseCleanliness: (number) => set((state) => ({ cleanliness: state.cleanliness - number })),
   setBloodSugarUnits: (number) => set((state) => ({ bloodSugarUnits: number })),
 }))
 
