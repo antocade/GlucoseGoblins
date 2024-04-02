@@ -3,7 +3,7 @@ import { create } from 'zustand'
 const useGoblinStore = create((set) => ({
   points: 500,
   apiLink:"",
-  items: null,
+  inventory:"",
   bloodSugarUnits: 0,
   refresh: false,
   hunger: 100,
@@ -12,6 +12,7 @@ const useGoblinStore = create((set) => ({
 
   increasePoints: (number) => set((state) => ({ points: state.points + number })),
   setApiLink: (string) => set((state) => ({ apiLink: string, refresh: true })),
+  setInventory: (string) => set((state) => ({ inventory: string })),
   setRefresh: (string) => set((state) => ({ refresh: string })),
   decreasePoints: (number) => set((state) => ({ points: state.points - number })),
   decreaseHunger: (number) => set((state) => ({ hunger: state.hunger - number })),

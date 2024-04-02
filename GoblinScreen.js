@@ -5,6 +5,7 @@ import {
   View,
   Image,
   ScrollView,
+  FlatList,
   TextInput,
   Animated,
   KeyboardAvoidingView,
@@ -36,6 +37,8 @@ export function GoblinScreen({ navigation }) {
   const decreaseHunger = useGoblinStore((state) => state.decreaseHunger);
   const decreasePlay = useGoblinStore((state) => state.decreasePlay);
   const decreaseCleanliness = useGoblinStore((state) => state.decreaseCleanliness);
+  const inventory = useGoblinStore((state) => state.inventory);
+  const setInventory = useGoblinStore((state) => state.setInventory);
   const [bloodSugar, setBloodSugar] = useState(0);
   const [pointsPM, setPointsPM] = useState(0);
   const [firstLoad, setFirstLoad] = useState(true)
@@ -80,13 +83,22 @@ export function GoblinScreen({ navigation }) {
       </View>
     );
   }
+
+  
+  function RenderFoodList({item}) {
+    return (
+      <View>
+        <Text style={GoblinScreenStyles.bloodSugarText}>Cock</Text>
+      </View>
+    );
+  }
   
   function FeedCircle() {
     let percentage = hunger + "%"
       
     return (
-      <View style={[GoblinScreenStyles.smallCircle, {zIndex:10}]}>
-        <View style={[GoblinScreenStyles.circleFill, { height:percentage, zIndex:0}]} />
+      <View style={[GoblinScreenStyles.smallCircle]}>
+        <View style={[GoblinScreenStyles.circleFill, { height:percentage}]} />
         <FontAwesome5 name="pizza-slice" size={24} color="#c3924f" />
        
       </View>
@@ -97,7 +109,7 @@ export function GoblinScreen({ navigation }) {
     let percentage = play + "%"
     return (
       <View style={GoblinScreenStyles.smallCircle}>
-        <View style={[GoblinScreenStyles.circleFill, { height:percentage, zIndex:0}]} />
+        <View style={[GoblinScreenStyles.circleFill, { height:percentage}]} />
         <FontAwesome name="soccer-ball-o" size={24} color="#c3924f" />
       </View>
     );
@@ -107,7 +119,7 @@ export function GoblinScreen({ navigation }) {
     let percentage = cleanliness + "%"
     return (
       <View style={GoblinScreenStyles.smallCircle}>
-        <View style={[GoblinScreenStyles.circleFill, { height:percentage, zIndex:0}]} />
+        <View style={[GoblinScreenStyles.circleFill, {height:percentage}]} />
         <FontAwesome name="bathtub" size={24} color="#c3924f" />
       </View>
     );
@@ -116,6 +128,7 @@ export function GoblinScreen({ navigation }) {
   function StatsCircle() {
     return (
       <View style={GoblinScreenStyles.smallCircle}>
+        <View style={[GoblinScreenStyles.circleFill, {height:"100%"}]} />
         <Ionicons name="stats-chart" size={24} color="#c3924f" />
       </View>
     );
@@ -276,6 +289,8 @@ export function GoblinScreen({ navigation }) {
         ]}
         source={require("./assets/cuteghost.png")}
       ></Animated.Image>
+      <FlatList data={inventory.food} renderItem={RenderFoodList}> </FlatList>
+
       <TextInput
         style={GoblinScreenStyles.goblinName}
         onChangeText={setGoblinName}
@@ -339,7 +354,7 @@ const GoblinScreenStyles = StyleSheet.create({
     color: "#222425",
   },
   circleFill: {
-    backgroundColor: 'lightgreen',
+    backgroundColor: '#008148',
     width: '100%',
     bottom: 0,
     position: 'absolute',
