@@ -128,10 +128,6 @@ export function GoblinScreen({ navigation }) {
     };
 
     if(listType == ListType.FOOD){
-      const data = Object.keys(jsonInventory.food).map(key => ({
-        key,
-        ...jsonInventory.food[key]
-      }));
       return(
         <View style={GoblinScreenStyles.list}>
           <Pressable onPress={() => setListType(ListType.NOTHING)}>
@@ -142,10 +138,7 @@ export function GoblinScreen({ navigation }) {
       )
     }
     else if (listType == ListType.TOYS) {
-      const data = Object.keys(jsonInventory.toys).map(key => ({
-        key,
-        ...jsonInventory.toys[key]
-      }));
+
       return(
         <View style={GoblinScreenStyles.list}>
           <Pressable onPress={() => setListType(ListType.NOTHING)}>
