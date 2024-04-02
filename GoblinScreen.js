@@ -11,17 +11,26 @@ import {
   KeyboardAvoidingView,
   Alert,
   Platform,
+  Pressable,
 } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { NavBar } from "./NavBar";
 import { useEffect, useRef, useState } from "react";
+import { MaterialIcons } from '@expo/vector-icons';
 import Constants from "expo-constants";
 import useGoblinStore from "./GoblinStore";
 
+const ListType = Object.freeze({ 
+  NOTHING: 0, 
+  FOOD: 1, 
+  TOYS: 2, 
+}); 
+
 
 export function GoblinScreen({ navigation }) {
+  let storage = require("./storage.json");
   const [goblinName, setGoblinName] = useState("Bartholomew");
   const coolposition = useRef(new Animated.ValueXY(0, 0)).current;
   const animateScaleX = useRef(new Animated.Value(1)).current;
@@ -37,12 +46,17 @@ export function GoblinScreen({ navigation }) {
   const decreaseHunger = useGoblinStore((state) => state.decreaseHunger);
   const decreasePlay = useGoblinStore((state) => state.decreasePlay);
   const decreaseCleanliness = useGoblinStore((state) => state.decreaseCleanliness);
+  const increaseHunger = useGoblinStore((state) => state.increaseHunger);
+  const increasePlay = useGoblinStore((state) => state.increasePlay);
+  const increaseCleanliness = useGoblinStore((state) => state.increaseCleanliness);
   const inventory = useGoblinStore((state) => state.inventory);
   const setInventory = useGoblinStore((state) => state.setInventory);
   const [bloodSugar, setBloodSugar] = useState(0);
   const [pointsPM, setPointsPM] = useState(0);
   const [firstLoad, setFirstLoad] = useState(true)
-
+  const [listType, setListType] = useState(ListType.NOTHING)
+ // setInventory(JSON.stringify(storage));
+  let jsonInventory = JSON.parse(inventory);
   if (apiLink == "" && firstLoad) {
     Alert.alert(
       "Error No API Link Entered",
@@ -84,34 +98,94 @@ export function GoblinScreen({ navigation }) {
     );
   }
 
-  
-  function RenderFoodList({item}) {
-    return (
-      <View>
-        <Text style={GoblinScreenStyles.bloodSugarText}>Cock</Text>
+  function InventoryList(){
+    const RenderFoodList = ({item}) => {
+      return (
+        <View style={GoblinScreenStyles.itemContainer}>
+        {/* <Image source={item.picture} style={GoblinScreenStyles.itemImage} /> */}
+        <Text style={GoblinScreenStyles.itemText}>{`${item.name} Restores ${item.hunger}`}</Text>
+        <Pressable
+          style={GoblinScreenStyles.buyButton}
+          onPress={() => increaseHunger(item.hunger)}>
+          <Text style={GoblinScreenStyles.buyButtonText}>Feed</Text>
+        </Pressable>
       </View>
-    );
+      );
+    };
+
+    const RenderToyList = ({item}) => {
+      return (
+        <View style={GoblinScreenStyles.itemContainer}>
+        {/* <Image source={item.picture} style={GoblinScreenStyles.itemImage} /> */}
+        <Text style={GoblinScreenStyles.itemText}>{`${item.name} Restores ${item.play}`}</Text>
+        <Pressable
+          style={GoblinScreenStyles.buyButton}
+          onPress={() => increasePlay(item.play)}>
+          <Text style={GoblinScreenStyles.buyButtonText}>Feed</Text>
+        </Pressable>
+      </View>
+      );
+    };
+
+    if(listType == ListType.FOOD){
+      const data = Object.keys(jsonInventory.food).map(key => ({
+        key,
+        ...jsonInventory.food[key]
+      }));
+      return(
+        <View style={GoblinScreenStyles.list}>
+          <Pressable onPress={() => setListType(ListType.NOTHING)}>
+          <MaterialIcons name="cancel" size={24} color="black" />
+          </Pressable>
+          <FlatList  data={data} renderItem={RenderFoodList}> </FlatList>
+        </View>
+      )
+    }
+    else if (listType == ListType.TOYS) {
+      const data = Object.keys(jsonInventory.toys).map(key => ({
+        key,
+        ...jsonInventory.toys[key]
+      }));
+      return(
+        <View style={GoblinScreenStyles.list}>
+          <Pressable onPress={() => setListType(ListType.NOTHING)}>
+          <MaterialIcons name="cancel" size={24} color="black" />
+          </Pressable>
+          <FlatList  data={data} renderItem={RenderToyList}> </FlatList>
+        </View>
+      )
+    }
   }
+  
   
   function FeedCircle() {
     let percentage = hunger + "%"
       
     return (
-      <View style={[GoblinScreenStyles.smallCircle]}>
-        <View style={[GoblinScreenStyles.circleFill, { height:percentage}]} />
-        <FontAwesome5 name="pizza-slice" size={24} color="#c3924f" />
-       
-      </View>
+      <Pressable onPress={() => setListType(ListType.FOOD)}>
+        <View style={[GoblinScreenStyles.smallCircle]}>
+          
+          <View style={[GoblinScreenStyles.circleFill, { height:percentage}]} />
+          
+            <FontAwesome5 name="pizza-slice" size={24} color="#c3924f" />
+          
+        </View>
+      </Pressable>
     );
   }
   
   function PlayCircle() {
     let percentage = play + "%"
     return (
-      <View style={GoblinScreenStyles.smallCircle}>
-        <View style={[GoblinScreenStyles.circleFill, { height:percentage}]} />
-        <FontAwesome name="soccer-ball-o" size={24} color="#c3924f" />
-      </View>
+      <Pressable onPress={() => setListType(ListType.TOYS)}>
+        <View style={GoblinScreenStyles.smallCircle}>
+      
+          <View style={[GoblinScreenStyles.circleFill, { height:percentage}]} />
+          
+            <FontAwesome name="soccer-ball-o" size={24} color="#c3924f" />
+          
+        </View>
+      </Pressable>
     );
   }
   
@@ -124,7 +198,7 @@ export function GoblinScreen({ navigation }) {
       </View>
     );
   }
-  
+
   function StatsCircle() {
     return (
       <View style={GoblinScreenStyles.smallCircle}>
@@ -289,16 +363,16 @@ export function GoblinScreen({ navigation }) {
         ]}
         source={require("./assets/cuteghost.png")}
       ></Animated.Image>
-      <FlatList data={inventory.food} renderItem={RenderFoodList}> </FlatList>
 
-      <TextInput
-        style={GoblinScreenStyles.goblinName}
-        onChangeText={setGoblinName}
-        value={goblinName}
-      ></TextInput>
-      <View style={{ position: "absolute", bottom: 0 }}>
+      {listType == ListType.NOTHING ? <View><TextInput
+          style={GoblinScreenStyles.goblinName}
+          onChangeText={setGoblinName}
+          value={goblinName}
+        ></TextInput>
+      <View style={{ position: "absolute", bottom: -160, left: -116 }}>
         <NavBar navigation={navigation}></NavBar>
-      </View>
+      </View></View> : <InventoryList></InventoryList>}
+     
       <StatusBar style="auto" backgroundColor="#e1d5c9"></StatusBar>
     </View>
   );
@@ -333,6 +407,14 @@ const GoblinScreenStyles = StyleSheet.create({
     overflow: 'hidden'
   },
 
+  list: {
+    width:"100%",
+    borderColor:'black',
+    borderWidth: 2,
+    borderRadius: 10,
+    flex:1,
+  },
+
   bloodSugarText: {
     color: "#222425",
     fontSize: 35,
@@ -358,7 +440,30 @@ const GoblinScreenStyles = StyleSheet.create({
     width: '100%',
     bottom: 0,
     position: 'absolute',
-    
     overflow: 'hidden'
-  }
+  },
+  itemContainer: {
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    padding: 30,
+    borderBottomWidth: 1,
+    borderBottomColor: '#222425',
+  },
+  itemImage: {
+    width: 50, 
+    height: 50, 
+    marginRight: 10, 
+    borderRadius: 25, 
+  },
+  itemText: {
+    color: '#222425', 
+    fontSize: 16, 
+    fontWeight: 'bold', 
+  },
+  buyButton: {
+    backgroundColor: '#c3924f',
+    padding: 10,
+    borderRadius: 5,
+    marginLeft: 'auto', // Pushes the button to the right
+  },
 });

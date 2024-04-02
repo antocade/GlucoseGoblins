@@ -3,10 +3,10 @@ import { create } from 'zustand'
 const useGoblinStore = create((set) => ({
   points: 500,
   apiLink:"",
-  inventory:"",
+  inventory: JSON.stringify(require("./storage.json")),
   bloodSugarUnits: 0,
   refresh: false,
-  hunger: 100,
+  hunger: 5,
   play: 100,
   cleanliness: 100,
 
@@ -16,8 +16,11 @@ const useGoblinStore = create((set) => ({
   setRefresh: (string) => set((state) => ({ refresh: string })),
   decreasePoints: (number) => set((state) => ({ points: state.points - number })),
   decreaseHunger: (number) => set((state) => ({ hunger: state.hunger - number })),
+  increaseHunger: (number) => set((state) => ({ hunger: state.hunger + number })),
   decreasePlay: (number) => set((state) => ({ play: state.play - number })),
+  increasePlay: (number) => set((state) => ({ play: state.play + number })),
   decreaseCleanliness: (number) => set((state) => ({ cleanliness: state.cleanliness - number })),
+  increaseCleanliness: (number) => set((state) => ({ Cleanliness: state.Cleanliness + number })),
   setBloodSugarUnits: (number) => set((state) => ({ bloodSugarUnits: number })),
 }))
 
