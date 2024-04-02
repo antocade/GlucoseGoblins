@@ -6,7 +6,7 @@ const useGoblinStore = create((set) => ({
   inventory: JSON.stringify(require("./storage.json")),
   bloodSugarUnits: 0,
   refresh: false,
-  hunger: 5,
+  hunger: 100,
   play: 100,
   cleanliness: 100,
 

@@ -368,13 +368,13 @@ export function GoblinScreen({ navigation }) {
       ></Animated.Image>
 
       {listType == ListType.NOTHING ? (
-        <View>
+        <View style={{width:'100%', height:'100%', alignItems:'center'}}>
           <TextInput
             style={GoblinScreenStyles.goblinName}
             onChangeText={setGoblinName}
             value={goblinName}
           ></TextInput>
-          <View style={{ position: "absolute", bottom: -160, left: -116 }}>
+          <View style={{ position: "absolute", top: 99 }}>
             <NavBar navigation={navigation}></NavBar>
           </View>
         </View>
