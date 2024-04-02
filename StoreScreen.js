@@ -11,44 +11,24 @@ import useGoblinStore from "./GoblinStore"
 import mockData from './mockData'; 
 
 
-
 export function StoreScreen({ navigation }) {
   const [selectedHeader, setSelectedHeader] = useState('Food');
   let points = useGoblinStore((state) => state.points);
   const decreasePoints = useGoblinStore((state) => state.decreasePoints);
   const [purchasedItems, setPurchasedItems] = useState(new Set()); // State to track purchased items
   const setInventory = useGoblinStore((state) => state.setInventory);
-  //let inv = useGoblinStore((state) => state.inventory);
+  let inv = useGoblinStore((state) => state.inventory);
   const filteredData = mockData.filter(item => item.category === selectedHeader);
-  var inv = `{
-    "food": {
-     "pizza": {"name": "Pizza", "amount": 0, "hunger": 25},
-     "soda": {"name": "Soda", "amount": 0, "hunger": 15},
-     "sandwich": {"name": "Sandwich", "amount": 0, "hunger": 30},
-     "steak": {"name": "Steak", "amount": 0, "hunger": 80}
-    },
-    "clothing": {
-     "hat": {"name": "Cowboy Hat", "picture": "./assets/cowboy.jpg", "equip": 0},
-     "glasses": {"name": "Cool Sunglasses", "picture": "./assets/glasses.jpg", "equip": 0}
-    },
-    "toys": {
-     "ball": {"name": "Ball", "amount": 0, "play": 25},
-     "yo-yo": {"name": "Yo-Yo", "amount": 0, "play": 15},
-     "ipad": {"name": "Ipad", "amount": 0, "play": 100}
-    }
-  }`;
+  
   const tempObj = JSON.parse(inv);
   
   const onEquipItem = (itemName) =>{
-    if (itemName == tempObj.clothing.hat.name){
-      tempObj.clothing.hat.equip = 1 - tempObj.clothing.hat.equip;
-      console.log(tempObj.clothing.hat.equip);
-      setInventory(JSON.stringify(tempObj));
-    }
-    else if (itemName == tempObj.clothing.glasses.name){
-      tempObj.clothing.glasses.equip = 1 - tempObj.clothing.glasses.equip;
-      console.log(tempObj.clothing.glasses.equip);
-      setInventory(JSON.stringify(tempObj));
+    for(let i = 0; i < tempObj.clothing.length; i++){
+      if (itemName == tempObj.clothing[i].name){
+        tempObj.clothing[i].equip = 1 - tempObj.clothing[i].equip;
+        console.log(tempObj.clothing[i].equip);
+        setInventory(JSON.stringify(tempObj));
+      }
     }
   };
   const onBuyItem = (itemId, itemName, cost) => {
@@ -62,8 +42,24 @@ export function StoreScreen({ navigation }) {
             Alert.alert("Insufficient Funds", "You do not have enough points for this", [{ text: "Okay", style: "okay" }])
           } else {
             decreasePoints(cost);
-            setPurchasedItems((prevItems) => new Set(prevItems.add(itemId))); // Add item ID to the purchased items
+            if(itemName == "Cool Sunglasses" || itemName == "Cowboy Hat"){
+              setPurchasedItems((prevItems) => new Set(prevItems.add(itemId))); // Add item ID to the purchased items
+            }
+            else{
+              for(let i = 0; i < tempObj.food.length; i++){
+                if(itemName == tempObj.food[i].name){
+                  tempObj.food[i].amount = tempObj.food[i].amount + 1;
+                }
+              }
+              for(let i = 0; i < tempObj.toys.length; i++){
+                if(itemName == tempObj.toys[i].name){
+                  tempObj.toys[i].amount++;
+                }
+              }
+            }
           }
+          setInventory(JSON.stringify(tempObj));
+          //console.log(tempObj);
         }},
       ]
     );
