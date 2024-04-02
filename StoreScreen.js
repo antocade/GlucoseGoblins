@@ -10,36 +10,26 @@ import Constants from "expo-constants";
 import useGoblinStore from "./GoblinStore"
 import mockData from './mockData'; 
 
-export function StoreScreen({navigation}) {
+export function StoreScreen({ navigation }) {
   const [selectedHeader, setSelectedHeader] = useState('Food');
   let points = useGoblinStore((state) => state.points);
   const decreasePoints = useGoblinStore((state) => state.decreasePoints);
-  function storeItem(itemName, cost, picture){
-    this.itemName = itemName;
-    this.cost = cost;
-    this.picture = picture;
-  }
+  const [purchasedItems, setPurchasedItems] = useState(new Set()); // State to track purchased items
 
   const filteredData = mockData.filter(item => item.category === selectedHeader);
-  const onBuyItem = (itemName, cost) => {
+
+  const onBuyItem = (itemId, itemName, cost) => {
     Alert.alert(
       "Buy Item",
-      'Are you sure you want to buy ' + itemName + ' for ' + cost + '?',
+      `Are you sure you want to buy ${itemName} for ${cost}?`,
       [
-        {text: "Cancel", style: "cancel"},
-        {text: "Yes", onPress: () => {
-          if(cost > points){
-            Alert.alert(
-              "Insufficient Funds",
-              'You do not have enough points for this',
-              [
-                {text: "Okay", style: "okay"}
-              ]
-            )
-          }
-          else{
-            points = points - cost;
+        { text: "Cancel", style: "cancel" },
+        { text: "Yes", onPress: () => {
+          if (cost > points) {
+            Alert.alert("Insufficient Funds", "You do not have enough points for this", [{ text: "Okay", style: "okay" }])
+          } else {
             decreasePoints(cost);
+            setPurchasedItems((prevItems) => new Set(prevItems.add(itemId))); // Add item ID to the purchased items
           }
         }},
       ]
@@ -60,11 +50,17 @@ export function StoreScreen({navigation}) {
     <View style={styles.itemContainer}>
       <Image source={item.picture} style={styles.itemImage} />
       <Text style={styles.itemText}>{`${item.itemName} - ${item.cost}`}</Text>
-      <TouchableOpacity
-        style={styles.buyButton}
-        onPress={() => onBuyItem(item.itemName, item.cost)}>
-        <Text style={styles.buyButtonText}>Buy</Text>
-      </TouchableOpacity>
+      {purchasedItems.has(item.id) ? (
+        <TouchableOpacity style={styles.buyButton} onPress={() => console.log('Equip item')}>
+          <Text style={styles.buyButtonText}>Equip</Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          style={styles.buyButton}
+          onPress={() => onBuyItem(item.id, item.itemName, item.cost)}>
+          <Text style={styles.buyButtonText}>Buy</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 
