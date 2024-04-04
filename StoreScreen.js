@@ -21,12 +21,22 @@ export function StoreScreen({ navigation }) {
   const filteredData = mockData.filter(item => item.category === selectedHeader);
   
   const tempObj = JSON.parse(inv);
+  const isClothingOwned = (itemName) => {
+    for (let i = 0; i < tempObj.clothing.length; i++) {
+      if (tempObj.clothing[i].name === itemName && tempObj.clothing[i].own === 1) {
+        return true;
+      }
+    }
+    return false;
+  };
   
+
   const onEquipItem = (itemName) =>{
     for(let i = 0; i < tempObj.clothing.length; i++){
       if (itemName == tempObj.clothing[i].name){
         tempObj.clothing[i].equip = 1 - tempObj.clothing[i].equip;
         console.log(tempObj.clothing[i].equip);
+        //tempObj.clothing[i].own = 0;
         setInventory(JSON.stringify(tempObj));
       }
     }
@@ -42,8 +52,13 @@ export function StoreScreen({ navigation }) {
             Alert.alert("Insufficient Funds", "You do not have enough points for this", [{ text: "Okay", style: "okay" }])
           } else {
             decreasePoints(cost);
-            if(itemName == "Cool Sunglasses" || itemName == "Cowboy Hat"){
-              setPurchasedItems((prevItems) => new Set(prevItems.add(itemId))); // Add item ID to the purchased items
+            if(itemName == "Cowboy Hat"){
+              setPurchasedItems((prevItems) => new Set(prevItems.add(5)));
+              tempObj.clothing[0].own = 1; // Add item ID to the purchased items
+            }
+            if(itemName == "Cool Sunglasses"){
+              setPurchasedItems((prevItems) => new Set(prevItems.add(6)));
+              tempObj.clothing[1].own = 1; // Add item ID to the purchased items
             }
             else{
               for(let i = 0; i < tempObj.food.length; i++){
@@ -79,7 +94,7 @@ export function StoreScreen({ navigation }) {
     <View style={styles.itemContainer}>
       <Image source={item.picture} style={styles.itemImage} />
       <Text style={styles.itemText}>{`${item.itemName} - ${item.cost}`}</Text>
-      {purchasedItems.has(item.id) ? (
+      {selectedHeader === "Clothing" && isClothingOwned(item.itemName) ? (
         <TouchableOpacity style={styles.buyButton} onPress={() => onEquipItem(item.itemName)}>
           <Text style={styles.buyButtonText}>Equip</Text>
         </TouchableOpacity>
