@@ -29,13 +29,10 @@ const ListType = Object.freeze({
 });
 
 export function GoblinScreen({ navigation }) {
-  let storage = require("./storage.json");
   const [goblinName, setGoblinName] = useState("Bartholomew");
   const coolposition = useRef(new Animated.ValueXY(0, 0)).current;
   const animateScaleX = useRef(new Animated.Value(1)).current;
   const apiLink = useGoblinStore((state) => state.apiLink);
-  const refresh = useGoblinStore((state) => state.refresh);
-  const setRefresh = useGoblinStore((state) => state.setRefresh);
   const points = useGoblinStore((state) => state.points);
   const increasePoints = useGoblinStore((state) => state.increasePoints);
   const bloodSugarUnits = useGoblinStore((state) => state.bloodSugarUnits);
@@ -58,7 +55,6 @@ export function GoblinScreen({ navigation }) {
   const [pointsPM, setPointsPM] = useState(0);
   const [firstLoad, setFirstLoad] = useState(true);
   const [listType, setListType] = useState(ListType.NOTHING);
-  // setInventory(JSON.stringify(storage));
   let jsonInventory = JSON.parse(inventory);
   if (apiLink == "" && firstLoad) {
     Alert.alert(
@@ -331,13 +327,10 @@ export function GoblinScreen({ navigation }) {
   }, []);
 
   useEffect(() => {
-    if (refresh) {
       console.log("REFRESHED");
       FetchBloodSugarNumber();
       GetPointsPerMinute();
-      setRefresh(false);
-    }
-  }, [refresh]);
+  }, [apiLink]);
 
   return (
     <View style={GoblinScreenStyles.container}>
