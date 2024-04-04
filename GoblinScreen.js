@@ -39,6 +39,7 @@ export function GoblinScreen({ navigation }) {
   const hunger = useGoblinStore((state) => state.hunger);
   const play = useGoblinStore((state) => state.play);
   const cleanliness = useGoblinStore((state) => state.cleanliness);
+  const cleanGoblin = useGoblinStore((state) => state.cleanGoblin);
   const decreaseHunger = useGoblinStore((state) => state.decreaseHunger);
   const decreasePlay = useGoblinStore((state) => state.decreasePlay);
   const decreaseCleanliness = useGoblinStore(
@@ -46,14 +47,10 @@ export function GoblinScreen({ navigation }) {
   );
   const increaseHunger = useGoblinStore((state) => state.increaseHunger);
   const increasePlay = useGoblinStore((state) => state.increasePlay);
-  const increaseCleanliness = useGoblinStore(
-    (state) => state.increaseCleanliness
-  );
   const inventory = useGoblinStore((state) => state.inventory);
   const setInventory = useGoblinStore((state) => state.setInventory);
   const [bloodSugar, setBloodSugar] = useState(0);
   const [pointsPM, setPointsPM] = useState(0);
-  const [firstLoad, setFirstLoad] = useState(true);
   const [listType, setListType] = useState(ListType.NOTHING);
   const [equippedItem, setEquippedItem] = useState(null);
   let jsonInventory = JSON.parse(inventory);
@@ -89,7 +86,7 @@ export function GoblinScreen({ navigation }) {
 
 
     const UseItem = (name) => {
-      console.log(name)
+      console.log("USED ITEM")
       
       if(listType == ListType.FOOD){
         for(i = 0; i < jsonInventory.food.length; i++){
@@ -174,7 +171,7 @@ export function GoblinScreen({ navigation }) {
       renderFunction = RenderToyList;
     }
 
-    if(isInventoryEmpty){
+    if(isInventoryEmpty(data)){
       return (
         <View style={GoblinScreenStyles.list}>
           <Pressable onPress={() => setListType(ListType.NOTHING)}>
@@ -234,10 +231,27 @@ export function GoblinScreen({ navigation }) {
   function BatheCircle() {
     let percentage = cleanliness + "%";
     return (
-      <View style={GoblinScreenStyles.smallCircle}>
-        <View style={[GoblinScreenStyles.circleFill, { height: percentage }]} />
-        <FontAwesome name="bathtub" size={24} color="#c3924f" />
-      </View>
+      <Pressable onPress={() => {cleanGoblin();  Alert.alert(
+        "Glu-Ghost Cleaned",
+        "asds",
+        [
+          {
+            text: "Accept",
+            onPress: () => {
+              navigation.navigate("Settings");
+            },
+            style: "accept",
+          },
+        ],
+        {
+          cancelable: true,
+        }
+      );}}>
+        <View style={GoblinScreenStyles.smallCircle}>
+          <View style={[GoblinScreenStyles.circleFill, { height: percentage }]} />
+          <FontAwesome name="bathtub" size={24} color="#c3924f" />
+        </View>
+      </Pressable>
     );
   }
 
@@ -305,6 +319,7 @@ export function GoblinScreen({ navigation }) {
   useEffect(() => {
     increasePoints(10000000);
     if (doneLoading) {
+      console.log("Finished load")
       if (apiLink == "") {
         Alert.alert(
           "Error No API Link Entered",
@@ -330,7 +345,6 @@ export function GoblinScreen({ navigation }) {
       FetchBloodSugarNumber();
       GetPointsPerMinute();
       GetEquippedItem();
-      setFirstLoad(false);
     }
   }, []);
 

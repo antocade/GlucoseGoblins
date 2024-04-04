@@ -12,8 +12,6 @@ const useGoblinStore = create(
       play: 100,
       cleanliness: 100,
       goblinName: "Bartholomew",
-      doneLoading: false,
-
       increasePoints: (number) =>
         set((state) => ({ points: state.points + number })),
       setApiLink: (string) =>
@@ -29,8 +27,8 @@ const useGoblinStore = create(
       increasePlay: (number) => set((state) => ({ play: state.play + number })),
       decreaseCleanliness: (number) =>
         set((state) => ({ cleanliness: state.cleanliness - number })),
-      increaseCleanliness: (number) =>
-        set((state) => ({ Cleanliness: state.Cleanliness + number })),
+      cleanGoblin: () =>
+        set((state) => ({ cleanliness: 100 })),
       setBloodSugarUnits: (number) =>
         set((state) => ({ bloodSugarUnits: number })),
       setGoblinName: (string) =>
