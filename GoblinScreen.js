@@ -10,6 +10,7 @@ import {
   Animated,
   Alert,
   Pressable,
+  TouchableOpacity,
 } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
@@ -57,8 +58,8 @@ export function GoblinScreen({ navigation }) {
   let jsonInventory = JSON.parse(inventory);
 
   const clothingImages = {
-    image1: require('./assets/cowboy.png'),
-    image2: require('./assets/glasses.png'),
+    image1: require("./assets/cowboy.png"),
+    image2: require("./assets/glasses.png"),
   };
 
   function BloodSugarCircle(props) {
@@ -84,79 +85,73 @@ export function GoblinScreen({ navigation }) {
   }
 
   function InventoryList() {
-
-
     const UseItem = (name) => {
-      console.log("USED ITEM")
-      
-      if(listType == ListType.FOOD){
-        for(i = 0; i < jsonInventory.food.length; i++){
-          console.log(jsonInventory.food[i])
-          if(jsonInventory.food[i].name == name){
-            if(jsonInventory.food[i].amount > 0){
-              increaseHunger(jsonInventory.food[i].hunger)
-              jsonInventory.food[i].amount -= 1 ;
+      console.log("USED ITEM");
+
+      if (listType == ListType.FOOD) {
+        for (i = 0; i < jsonInventory.food.length; i++) {
+          console.log(jsonInventory.food[i]);
+          if (jsonInventory.food[i].name == name) {
+            if (jsonInventory.food[i].amount > 0) {
+              increaseHunger(jsonInventory.food[i].hunger);
+              jsonInventory.food[i].amount -= 1;
             }
           }
         }
-      }
-      else if (listType == ListType.TOYS){
-        for(i = 0; i < jsonInventory.toys.length; i++){
-          if(jsonInventory.toys[i].name == name){
-            if(jsonInventory.toys[i].amount > 0){
-              increasePlay(data[i].play)
+      } else if (listType == ListType.TOYS) {
+        for (i = 0; i < jsonInventory.toys.length; i++) {
+          if (jsonInventory.toys[i].name == name) {
+            if (jsonInventory.toys[i].amount > 0) {
+              increasePlay(data[i].play);
               jsonInventory.toys[i].amount -= 1;
             }
           }
         }
       }
       setInventory(JSON.stringify(jsonInventory));
-    }
+    };
 
     const RenderFoodList = ({ item }) => {
-      if(item.amount != 0){
+      if (item.amount != 0) {
         return (
-        
           <View style={GoblinScreenStyles.itemContainer}>
-            
             <Text
               style={GoblinScreenStyles.itemText}
             >{`${item.name} Restores ${item.hunger} Hunger Amount:${item.amount}`}</Text>
-            <Pressable
+            <TouchableOpacity
               style={GoblinScreenStyles.buyButton}
               onPress={() => UseItem(item.name)}
             >
               <Text style={GoblinScreenStyles.buyButtonText}>Feed</Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         );
       }
-      
     };
 
     const RenderToyList = ({ item }) => {
-      if(item.amount != 0){
+      if (item.amount != 0) {
         return (
           <View style={GoblinScreenStyles.itemContainer}>
             {/* <Image source={item.picture} style={GoblinScreenStyles.itemImage} /> */}
             <Text
               style={GoblinScreenStyles.itemText}
             >{`${item.name} Restores:${item.play} Fun Amount:${item.amount}`}</Text>
-            <Pressable
+            <TouchableOpacity
               style={GoblinScreenStyles.buyButton}
               onPress={() => UseItem(item.name)}
             >
               <Text style={GoblinScreenStyles.buyButtonText}>Play</Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         );
       }
     };
 
     const isInventoryEmpty = (data) => {
-      for(i = 0; i < data.length; i++){
-        if(data[i].amount > 0){
-          return(false)
+      for (i = 0; i < data.length; i++) {
+        if (data[i].amount > 0) {
+          return false;
         }
       }
       return true;
@@ -172,38 +167,44 @@ export function GoblinScreen({ navigation }) {
       renderFunction = RenderToyList;
     }
 
-    if(isInventoryEmpty(data)){
+    if (isInventoryEmpty(data)) {
       return (
         <View style={[GoblinScreenStyles.list]}>
-          <Pressable onPress={() => setListType(ListType.NOTHING)}>
+          <TouchableOpacity onPress={() => setListType(ListType.NOTHING)}>
             <MaterialIcons name="cancel" size={50} color="black" />
-          </Pressable>
-          <View style={{justifyContent:'center', alignItems:'center'}}>
-            {listType == ListType.FOOD ? <Text style={GoblinScreenStyles.bigItemText}>Food Inventory Is Empty</Text> : <Text style={GoblinScreenStyles.bigItemText}>Toys Inventory Is Empty</Text>}
+          </TouchableOpacity>
+          <View style={{ justifyContent: "center", alignItems: "center" }}>
+            {listType == ListType.FOOD ? (
+              <Text style={GoblinScreenStyles.bigItemText}>
+                Food Inventory Is Empty
+              </Text>
+            ) : (
+              <Text style={GoblinScreenStyles.bigItemText}>
+                Toys Inventory Is Empty
+              </Text>
+            )}
           </View>
         </View>
       );
-    }
-    else{
+    } else {
       return (
         <View style={GoblinScreenStyles.list}>
-          <Pressable onPress={() => setListType(ListType.NOTHING)}>
+          <TouchableOpacity onPress={() => setListType(ListType.NOTHING)}>
             <MaterialIcons name="cancel" size={50} color="black" />
-          </Pressable>
+          </TouchableOpacity>
           <FlatList data={data} renderItem={renderFunction}>
             {" "}
           </FlatList>
         </View>
       );
     }
-    
   }
 
   function FeedCircle() {
     let percentage = hunger + "%";
 
     return (
-      <Pressable onPress={() => setListType(ListType.FOOD)}>
+      <TouchableOpacity onPress={() => setListType(ListType.FOOD)}>
         <View style={[GoblinScreenStyles.smallCircle]}>
           <View
             style={[GoblinScreenStyles.circleFill, { height: percentage }]}
@@ -211,14 +212,14 @@ export function GoblinScreen({ navigation }) {
 
           <FontAwesome5 name="pizza-slice" size={24} color="#c3924f" />
         </View>
-      </Pressable>
+      </TouchableOpacity>
     );
   }
 
   function PlayCircle() {
     let percentage = play + "%";
     return (
-      <Pressable onPress={() => setListType(ListType.TOYS)}>
+      <TouchableOpacity onPress={() => setListType(ListType.TOYS)}>
         <View style={GoblinScreenStyles.smallCircle}>
           <View
             style={[GoblinScreenStyles.circleFill, { height: percentage }]}
@@ -226,34 +227,42 @@ export function GoblinScreen({ navigation }) {
 
           <FontAwesome name="soccer-ball-o" size={24} color="#c3924f" />
         </View>
-      </Pressable>
+      </TouchableOpacity>
     );
   }
 
   function BatheCircle() {
     let percentage = cleanliness + "%";
     return (
-      <Pressable onPress={() => {cleanGoblin();  Alert.alert(
-        goblinName + " Has Been Cleaned",
-        "You gave " + goblinName + " the best bath of his life. He is 100% clean! ",
-        [
-          {
-            text: "Accept",
-            onPress: () => {
-              
-            },
-            style: "accept",
-          },
-        ],
-        {
-          cancelable: true,
-        }
-      );}}>
+      <TouchableOpacity
+        onPress={() => {
+          cleanGoblin();
+          Alert.alert(
+            goblinName + " Has Been Cleaned",
+            "You gave " +
+              goblinName +
+              " the best bath of his life. He is 100% clean! ",
+            [
+              {
+                text: "Accept",
+                onPress: () => {},
+                style: "accept",
+              },
+            ],
+            {
+              cancelable: true,
+            }
+          );
+        }}
+      >
         <View style={GoblinScreenStyles.smallCircle}>
-          <View style={[GoblinScreenStyles.circleFill, { height: percentage }]} />
+          <View
+            style={[GoblinScreenStyles.circleFill, { height: percentage }]}
+          />
+
           <FontAwesome name="bathtub" size={24} color="#c3924f" />
         </View>
-      </Pressable>
+      </TouchableOpacity>
     );
   }
 
@@ -272,38 +281,35 @@ export function GoblinScreen({ navigation }) {
   }
 
   function GetEquippedItem() {
-    for(i = 0; i < jsonInventory.clothing.length; i++ ){
-      if(jsonInventory.clothing[i].equip == 1){
-        if(jsonInventory.clothing[i].name == "Cowboy Hat"){
+    for (i = 0; i < jsonInventory.clothing.length; i++) {
+      if (jsonInventory.clothing[i].equip == 1) {
+        if (jsonInventory.clothing[i].name == "Cowboy Hat") {
           setEquippedItem(clothingImages.image1);
-        }
-        else if(jsonInventory.clothing[i].name == "Cool Sunglasses"){
+        } else if (jsonInventory.clothing[i].name == "Cool Sunglasses") {
           setEquippedItem(clothingImages.image2);
         }
-        
       }
     }
-    console.log(jsonInventory.clothing)
-    console.log(equippedItem)
-    
+    console.log(jsonInventory.clothing);
+    console.log(equippedItem);
   }
 
   async function FetchBloodSugarNumber() {
     console.log(apiLink);
-    let currentApiLink;
-    if(apiLink.slice(-1) != "/"){
+    let currentApiLink = "";
+    if (apiLink.slice(-1) != "/") {
       currentApiLink = apiLink + "/";
-    }
-    else{
+    } else {
       currentApiLink = apiLink;
     }
-    
+
     try {
       const response = await fetch(currentApiLink + "api/v1/entries.json");
       const json = await response.json();
       setBloodSugar(json[0].sgv);
     } catch (e) {
-      console.log("API FAILED");
+      console.log("API FAILED")
+      setBloodSugar(0);
     }
   }
 
@@ -319,9 +325,9 @@ export function GoblinScreen({ navigation }) {
     }
   }
   useEffect(() => {
-    increasePoints(10000000);
+    console.log(doneLoading);
     if (doneLoading) {
-      console.log("Finished load")
+      console.log("Finished load");
       if (apiLink == "") {
         Alert.alert(
           "Error No API Link Entered",
@@ -348,7 +354,7 @@ export function GoblinScreen({ navigation }) {
       GetPointsPerMinute();
       GetEquippedItem();
     }
-  }, []);
+  }, [doneLoading]);
 
   useEffect(() => {
     Animated.loop(
@@ -467,34 +473,33 @@ export function GoblinScreen({ navigation }) {
         <StatsCircle></StatsCircle>
       </View>
       <View>
-      <Animated.Image
-        style={[
-          GoblinScreenStyles.clothingImage,
-          {
-            transform: [
-              { translateY: coolposition.y  },
-              { translateX: coolposition.x },
-              { scaleX: animateScaleX },
-            ],
-          },
-        ]}
-        source={equippedItem}
-      ></Animated.Image>
-      <Animated.Image
-        style={[
-          GoblinScreenStyles.goblinImage,
-          {
-            transform: [
-              { translateY: coolposition.y },
-              { translateX: coolposition.x },
-              { scaleX: animateScaleX },
-            ],
-          },
-        ]}
-        source={require("./assets/cuteghost.png")}
-      ></Animated.Image>
+        <Animated.Image
+          style={[
+            GoblinScreenStyles.clothingImage,
+            {
+              transform: [
+                { translateY: coolposition.y },
+                { translateX: coolposition.x },
+                { scaleX: animateScaleX },
+              ],
+            },
+          ]}
+          source={equippedItem}
+        ></Animated.Image>
+        <Animated.Image
+          style={[
+            GoblinScreenStyles.goblinImage,
+            {
+              transform: [
+                { translateY: coolposition.y },
+                { translateX: coolposition.x },
+                { scaleX: animateScaleX },
+              ],
+            },
+          ]}
+          source={require("./assets/cuteghost.png")}
+        ></Animated.Image>
       </View>
-      
 
       {listType == ListType.NOTHING ? (
         <View style={{ width: "100%", flexGrow: 1, alignItems: "center" }}>
@@ -568,16 +573,16 @@ const GoblinScreenStyles = StyleSheet.create({
   goblinImage: {
     width: 300,
     height: 300,
-    zIndex:0
+    zIndex: 0,
   },
   clothingImage: {
-    position:'absolute',
-    left:50,
-    
+    position: "absolute",
+    left: 50,
+
     bottom: 150,
     width: 200,
     height: 200,
-    zIndex:10
+    zIndex: 10,
   },
   goblinName: {
     fontSize: 30,

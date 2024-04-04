@@ -1,10 +1,10 @@
 import { create } from "zustand";
 import { StateStorage, persist, createJSONStorage } from "zustand/middleware";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const useGoblinStore = create(
   persist(
     (set, get) => ({
-      points: 500,
+      points: 10000,
       apiLink: "",
       inventory: JSON.stringify(require("./storage.json")),
       bloodSugarUnits: 0,
@@ -27,34 +27,34 @@ const useGoblinStore = create(
       increasePlay: (number) => set((state) => ({ play: state.play + number })),
       decreaseCleanliness: (number) =>
         set((state) => ({ cleanliness: state.cleanliness - number })),
-      cleanGoblin: () =>
-        set((state) => ({ cleanliness: 100 })),
+      cleanGoblin: () => set((state) => ({ cleanliness: 100 })),
+      setDoneLoading: () => set((state) => ({ doneLoading:true })),
       setBloodSugarUnits: (number) =>
         set((state) => ({ bloodSugarUnits: number })),
-      setGoblinName: (string) =>
-        set((state) => ({ goblinName: string })),
+      setGoblinName: (string) => set((state) => ({ goblinName: string })),
+      resetProgress: () =>
+        set((state) => ({
+          points: 10000,
+          inventory: JSON.stringify(require("./storage.json")),
+          hunger: 100,
+          play: 100,
+          cleanliness: 100,
+        })),
     }),
     {
       name: "goblin-store",
       storage: createJSONStorage(() => AsyncStorage),
       onRehydrateStorage: (state) => {
-        console.log('hydration starts')
-
+        console.log("hydration starts");
         // optional
         return (state, error) => {
-          if (error) {
-            console.log('an error happened during hydration', error)
-          } else {
-            doneLoading = true
-          }
-        }
+            state.setDoneLoading();
+        };
       },
-
     },
     (set) => ({
-      
       doneLoading: false,
-    }),
+    })
   )
 );
 
