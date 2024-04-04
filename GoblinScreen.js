@@ -117,10 +117,10 @@ export function GoblinScreen({ navigation }) {
         return (
         
           <View style={GoblinScreenStyles.itemContainer}>
-            {/* <Image source={item.picture} style={GoblinScreenStyles.itemImage} /> */}
+            
             <Text
               style={GoblinScreenStyles.itemText}
-            >{`${item.name} Restores ${item.hunger}`}</Text>
+            >{`${item.name} Restores ${item.hunger} Hunger Amount:${item.amount}`}</Text>
             <Pressable
               style={GoblinScreenStyles.buyButton}
               onPress={() => UseItem(item.name)}
@@ -140,7 +140,7 @@ export function GoblinScreen({ navigation }) {
             {/* <Image source={item.picture} style={GoblinScreenStyles.itemImage} /> */}
             <Text
               style={GoblinScreenStyles.itemText}
-            >{`${item.name} Restores ${item.play}`}</Text>
+            >{`${item.name} Restores:${item.play} Fun Amount:${item.amount}`}</Text>
             <Pressable
               style={GoblinScreenStyles.buyButton}
               onPress={() => UseItem(item.name)}
@@ -173,12 +173,13 @@ export function GoblinScreen({ navigation }) {
 
     if(isInventoryEmpty(data)){
       return (
-        <View style={GoblinScreenStyles.list}>
+        <View style={[GoblinScreenStyles.list]}>
           <Pressable onPress={() => setListType(ListType.NOTHING)}>
-            <MaterialIcons name="cancel" size={30} color="black" />
+            <MaterialIcons name="cancel" size={50} color="black" />
           </Pressable>
-          {listType == ListType.FOOD ? <Text>Food Inventory Is Empty</Text> : <Text>Toys Inventory Is Empty</Text>}
-          
+          <View style={{justifyContent:'center', alignItems:'center'}}>
+            {listType == ListType.FOOD ? <Text style={GoblinScreenStyles.bigItemText}>Food Inventory Is Empty</Text> : <Text style={GoblinScreenStyles.bigItemText}>Toys Inventory Is Empty</Text>}
+          </View>
         </View>
       );
     }
@@ -186,7 +187,7 @@ export function GoblinScreen({ navigation }) {
       return (
         <View style={GoblinScreenStyles.list}>
           <Pressable onPress={() => setListType(ListType.NOTHING)}>
-            <MaterialIcons name="cancel" size={30} color="black" />
+            <MaterialIcons name="cancel" size={50} color="black" />
           </Pressable>
           <FlatList data={data} renderItem={renderFunction}>
             {" "}
@@ -232,13 +233,13 @@ export function GoblinScreen({ navigation }) {
     let percentage = cleanliness + "%";
     return (
       <Pressable onPress={() => {cleanGoblin();  Alert.alert(
-        "Glu-Ghost Cleaned",
-        "asds",
+        goblinName + " Has Been Cleaned",
+        "You gave " + goblinName + " the best bath of his life. He is 100% clean! ",
         [
           {
             text: "Accept",
             onPress: () => {
-              navigation.navigate("Settings");
+              
             },
             style: "accept",
           },
@@ -590,7 +591,7 @@ const GoblinScreenStyles = StyleSheet.create({
   itemContainer: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 30,
+    padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#222425",
   },
@@ -603,6 +604,11 @@ const GoblinScreenStyles = StyleSheet.create({
   itemText: {
     color: "#222425",
     fontSize: 16,
+    fontWeight: "bold",
+  },
+  bigItemText: {
+    color: "#222425",
+    fontSize: 20,
     fontWeight: "bold",
   },
   buyButton: {
