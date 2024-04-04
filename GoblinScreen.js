@@ -31,6 +31,7 @@ export function GoblinScreen({ navigation }) {
   const doneLoading = useGoblinStore((state) => state.doneLoading);
   const setGoblinName = useGoblinStore((state) => state.setGoblinName);
   const coolposition = useRef(new Animated.ValueXY(0, 0)).current;
+  const itemPosition = useRef(new Animated.ValueXY(0, 0)).current;
   const animateScaleX = useRef(new Animated.Value(1)).current;
   const apiLink = useGoblinStore((state) => state.apiLink);
   const points = useGoblinStore((state) => state.points);
@@ -471,7 +472,7 @@ export function GoblinScreen({ navigation }) {
           GoblinScreenStyles.clothingImage,
           {
             transform: [
-              { translateY: coolposition.y },
+              { translateY: coolposition.y  },
               { translateX: coolposition.x },
               { scaleX: animateScaleX },
             ],
@@ -571,10 +572,11 @@ const GoblinScreenStyles = StyleSheet.create({
   },
   clothingImage: {
     position:'absolute',
-    left:55,
-    bottom: 220,
-    width: 120,
-    height: 100,
+    left:50,
+    
+    bottom: 150,
+    width: 200,
+    height: 200,
     zIndex:10
   },
   goblinName: {
