@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { NavBar } from './NavBar';
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import Constants from "expo-constants";
 import useGoblinStore from "./GoblinStore"
 import mockData from './mockData'; 
@@ -19,8 +19,9 @@ export function StoreScreen({ navigation }) {
   const setInventory = useGoblinStore((state) => state.setInventory);
   let inv = useGoblinStore((state) => state.inventory);
   const filteredData = mockData.filter(item => item.category === selectedHeader);
-  
-  const tempObj = JSON.parse(inv);
+  const [inventoryUpdate, setInventoryUpdate] = useState(false); 
+
+  let tempObj = JSON.parse(inv);
   const isClothingOwned = (itemName) => {
     for (let i = 0; i < tempObj.clothing.length; i++) {
       if (tempObj.clothing[i].name === itemName && tempObj.clothing[i].own === 1) {
@@ -31,13 +32,17 @@ export function StoreScreen({ navigation }) {
   };
   
 
-  const onEquipItem = (itemName) =>{
-    for(let i = 0; i < tempObj.clothing.length; i++){
-      if (itemName == tempObj.clothing[i].name){
+  useEffect(() => {
+    tempObj = JSON.parse(inv); // Re-parse the inventory on update
+  }, [inventoryUpdate, inv]);
+
+  const onEquipItem = (itemName) => {
+    for (let i = 0; i < tempObj.clothing.length; i++) {
+      if (itemName === tempObj.clothing[i].name) {
         tempObj.clothing[i].equip = 1 - tempObj.clothing[i].equip;
-        console.log(tempObj.clothing[i].equip);
-        //tempObj.clothing[i].own = 0;
         setInventory(JSON.stringify(tempObj));
+        setInventoryUpdate(!inventoryUpdate);
+        console.log(tempObj.clothing[i].equip);
       }
     }
   };
@@ -90,23 +95,28 @@ export function StoreScreen({ navigation }) {
     </TouchableOpacity>
   );
 
-  const renderItem = ({ item }) => (
-    <View style={styles.itemContainer}>
-      <Image source={item.picture} style={styles.itemImage} />
-      <Text style={styles.itemText}>{`${item.itemName} - ${item.cost}`}</Text>
-      {selectedHeader === "Clothing" && isClothingOwned(item.itemName) ? (
-        <TouchableOpacity style={styles.buyButton} onPress={() => onEquipItem(item.itemName)}>
-          <Text style={styles.buyButtonText}>Equip</Text>
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity
-          style={styles.buyButton}
-          onPress={() => onBuyItem(item.id, item.itemName, item.cost)}>
-          <Text style={styles.buyButtonText}>Buy</Text>
-        </TouchableOpacity>
-      )}
-    </View>
-  );
+  const renderItem = ({ item }) => {
+    // Determine if the item is equipped
+    const isEquipped = tempObj.clothing.some(clothingItem => clothingItem.name === item.itemName && clothingItem.equip === 1);
+    
+    return (
+      <View style={styles.itemContainer}>
+        <Image source={item.picture} style={styles.itemImage} />
+        <Text style={styles.itemText}>{`${item.itemName} - ${item.cost}`}</Text>
+        {selectedHeader === "Clothing" && isClothingOwned(item.itemName) ? (
+          <TouchableOpacity style={styles.buyButton} onPress={() => onEquipItem(item.itemName)}>
+            <Text style={styles.buyButtonText}>{isEquipped ? "Unequip" : "Equip"}</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={styles.buyButton}
+            onPress={() => onBuyItem(item.id, item.itemName, item.cost)}>
+            <Text style={styles.buyButtonText}>Buy</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
