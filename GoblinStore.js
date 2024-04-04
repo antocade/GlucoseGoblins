@@ -11,6 +11,8 @@ const useGoblinStore = create(
       hunger: 100,
       play: 100,
       cleanliness: 100,
+      goblinName: "Bartholomew",
+      doneLoading: false,
 
       increasePoints: (number) =>
         set((state) => ({ points: state.points + number })),
@@ -31,11 +33,30 @@ const useGoblinStore = create(
         set((state) => ({ Cleanliness: state.Cleanliness + number })),
       setBloodSugarUnits: (number) =>
         set((state) => ({ bloodSugarUnits: number })),
+      setGoblinName: (string) =>
+        set((state) => ({ goblinName: string })),
     }),
     {
       name: "goblin-store",
       storage: createJSONStorage(() => AsyncStorage),
-    }
+      onRehydrateStorage: (state) => {
+        console.log('hydration starts')
+
+        // optional
+        return (state, error) => {
+          if (error) {
+            console.log('an error happened during hydration', error)
+          } else {
+            doneLoading = true
+          }
+        }
+      },
+
+    },
+    (set) => ({
+      
+      doneLoading: false,
+    }),
   )
 );
 

@@ -6,8 +6,8 @@
      {"name": "Steak", "amount": 0, "hunger": 80}
    ],
    "clothing": [
-     {"name": "Cowboy Hat", "picture": "./assets/cowboy.jpg", "own": 0, "equip": 0},
-     {"name": "Cool Sunglasses", "picture": "./assets/glasses.jpg", "own": 0, "equip": 0}
+     {"name": "Cowboy Hat", "picture": "./assets/cowboy.png", "own": 0, "equip": 0},
+     {"name": "Cool Sunglasses", "picture": "./assets/glasses.png", "own": 0, "equip": 0}
    ],
    "toys": [
      {"name": "Ball", "amount": 0, "play": 25},

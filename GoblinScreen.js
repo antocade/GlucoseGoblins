@@ -8,9 +8,7 @@ import {
   FlatList,
   TextInput,
   Animated,
-  KeyboardAvoidingView,
   Alert,
-  Platform,
   Pressable,
 } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -29,7 +27,9 @@ const ListType = Object.freeze({
 });
 
 export function GoblinScreen({ navigation }) {
-  const [goblinName, setGoblinName] = useState("Bartholomew");
+  const goblinName = useGoblinStore((state) => state.goblinName);
+  const doneLoading = useGoblinStore((state) => state.doneLoading);
+  const setGoblinName = useGoblinStore((state) => state.setGoblinName);
   const coolposition = useRef(new Animated.ValueXY(0, 0)).current;
   const animateScaleX = useRef(new Animated.Value(1)).current;
   const apiLink = useGoblinStore((state) => state.apiLink);
@@ -55,29 +55,13 @@ export function GoblinScreen({ navigation }) {
   const [pointsPM, setPointsPM] = useState(0);
   const [firstLoad, setFirstLoad] = useState(true);
   const [listType, setListType] = useState(ListType.NOTHING);
+  const [equippedItem, setEquippedItem] = useState(null);
   let jsonInventory = JSON.parse(inventory);
-  if (apiLink == "" && firstLoad) {
-    Alert.alert(
-      "Error No API Link Entered",
-      "No API Link has been entered. Please enter it in on the settings page.",
-      [
-        {
-          text: "Accept",
-          onPress: () => {
-            navigation.navigate("Settings");
-          },
-          style: "accept",
-        },
-      ],
-      {
-        cancelable: true,
-        onDismiss: () => {
-          navigation.navigate("Settings");
-        },
-      }
-    );
-    setFirstLoad(false);
-  }
+
+  const clothingImages = {
+    image1: require('./assets/cowboy.png'),
+    image2: require('./assets/glasses.png'),
+  };
 
   function BloodSugarCircle(props) {
     return (
@@ -102,38 +86,82 @@ export function GoblinScreen({ navigation }) {
   }
 
   function InventoryList() {
+
+
+    const UseItem = (name) => {
+      console.log(name)
+      
+      if(listType == ListType.FOOD){
+        for(i = 0; i < jsonInventory.food.length; i++){
+          console.log(jsonInventory.food[i])
+          if(jsonInventory.food[i].name == name){
+            if(jsonInventory.food[i].amount > 0){
+              increaseHunger(jsonInventory.food[i].hunger)
+              jsonInventory.food[i].amount -= 1 ;
+            }
+          }
+        }
+      }
+      else if (listType == ListType.TOYS){
+        for(i = 0; i < jsonInventory.toys.length; i++){
+          if(jsonInventory.toys[i].name == name){
+            if(jsonInventory.toys[i].amount > 0){
+              increasePlay(data[i].play)
+              jsonInventory.toys[i].amount -= 1;
+            }
+          }
+        }
+      }
+      setInventory(JSON.stringify(jsonInventory));
+    }
+
     const RenderFoodList = ({ item }) => {
-      return (
-        <View style={GoblinScreenStyles.itemContainer}>
-          {/* <Image source={item.picture} style={GoblinScreenStyles.itemImage} /> */}
-          <Text
-            style={GoblinScreenStyles.itemText}
-          >{`${item.name} Restores ${item.hunger}`}</Text>
-          <Pressable
-            style={GoblinScreenStyles.buyButton}
-            onPress={() => increaseHunger(item.hunger)}
-          >
-            <Text style={GoblinScreenStyles.buyButtonText}>Feed</Text>
-          </Pressable>
-        </View>
-      );
+      if(item.amount != 0){
+        return (
+        
+          <View style={GoblinScreenStyles.itemContainer}>
+            {/* <Image source={item.picture} style={GoblinScreenStyles.itemImage} /> */}
+            <Text
+              style={GoblinScreenStyles.itemText}
+            >{`${item.name} Restores ${item.hunger}`}</Text>
+            <Pressable
+              style={GoblinScreenStyles.buyButton}
+              onPress={() => UseItem(item.name)}
+            >
+              <Text style={GoblinScreenStyles.buyButtonText}>Feed</Text>
+            </Pressable>
+          </View>
+        );
+      }
+      
     };
 
     const RenderToyList = ({ item }) => {
-      return (
-        <View style={GoblinScreenStyles.itemContainer}>
-          {/* <Image source={item.picture} style={GoblinScreenStyles.itemImage} /> */}
-          <Text
-            style={GoblinScreenStyles.itemText}
-          >{`${item.name} Restores ${item.play}`}</Text>
-          <Pressable
-            style={GoblinScreenStyles.buyButton}
-            onPress={() => increasePlay(item.play)}
-          >
-            <Text style={GoblinScreenStyles.buyButtonText}>Feed</Text>
-          </Pressable>
-        </View>
-      );
+      if(item.amount != 0){
+        return (
+          <View style={GoblinScreenStyles.itemContainer}>
+            {/* <Image source={item.picture} style={GoblinScreenStyles.itemImage} /> */}
+            <Text
+              style={GoblinScreenStyles.itemText}
+            >{`${item.name} Restores ${item.play}`}</Text>
+            <Pressable
+              style={GoblinScreenStyles.buyButton}
+              onPress={() => UseItem(item.name)}
+            >
+              <Text style={GoblinScreenStyles.buyButtonText}>Play</Text>
+            </Pressable>
+          </View>
+        );
+      }
+    };
+
+    const isInventoryEmpty = (data) => {
+      for(i = 0; i < data.length; i++){
+        if(data[i].amount > 0){
+          return(false)
+        }
+      }
+      return true;
     };
 
     let renderFunction = "";
@@ -146,16 +174,30 @@ export function GoblinScreen({ navigation }) {
       renderFunction = RenderToyList;
     }
 
-    return (
-      <View style={GoblinScreenStyles.list}>
-        <Pressable onPress={() => setListType(ListType.NOTHING)}>
-          <MaterialIcons name="cancel" size={24} color="black" />
-        </Pressable>
-        <FlatList data={data} renderItem={renderFunction}>
-          {" "}
-        </FlatList>
-      </View>
-    );
+    if(isInventoryEmpty){
+      return (
+        <View style={GoblinScreenStyles.list}>
+          <Pressable onPress={() => setListType(ListType.NOTHING)}>
+            <MaterialIcons name="cancel" size={30} color="black" />
+          </Pressable>
+          {listType == ListType.FOOD ? <Text>Food Inventory Is Empty</Text> : <Text>Toys Inventory Is Empty</Text>}
+          
+        </View>
+      );
+    }
+    else{
+      return (
+        <View style={GoblinScreenStyles.list}>
+          <Pressable onPress={() => setListType(ListType.NOTHING)}>
+            <MaterialIcons name="cancel" size={30} color="black" />
+          </Pressable>
+          <FlatList data={data} renderItem={renderFunction}>
+            {" "}
+          </FlatList>
+        </View>
+      );
+    }
+    
   }
 
   function FeedCircle() {
@@ -213,10 +255,35 @@ export function GoblinScreen({ navigation }) {
     return convertedBloodSugar;
   }
 
+  function GetEquippedItem() {
+    for(i = 0; i < jsonInventory.clothing.length; i++ ){
+      if(jsonInventory.clothing[i].equip == 1){
+        if(jsonInventory.clothing[i].name == "Cowboy Hat"){
+          setEquippedItem(clothingImages.image1);
+        }
+        else if(jsonInventory.clothing[i].name == "Cool Sunglasses"){
+          setEquippedItem(clothingImages.image2);
+        }
+        
+      }
+    }
+    console.log(jsonInventory.clothing)
+    console.log(equippedItem)
+    
+  }
+
   async function FetchBloodSugarNumber() {
     console.log(apiLink);
+    let currentApiLink;
+    if(apiLink.slice(-1) != "/"){
+      currentApiLink = apiLink + "/";
+    }
+    else{
+      currentApiLink = apiLink;
+    }
+    
     try {
-      const response = await fetch(apiLink + "api/v1/entries.json");
+      const response = await fetch(currentApiLink + "api/v1/entries.json");
       const json = await response.json();
       setBloodSugar(json[0].sgv);
     } catch (e) {
@@ -235,6 +302,37 @@ export function GoblinScreen({ navigation }) {
       setPointsPM(1);
     }
   }
+  useEffect(() => {
+    increasePoints(10000000);
+    if (doneLoading) {
+      if (apiLink == "") {
+        Alert.alert(
+          "Error No API Link Entered",
+          "No API Link has been entered. Please enter it in on the settings page.",
+          [
+            {
+              text: "Accept",
+              onPress: () => {
+                navigation.navigate("Settings");
+              },
+              style: "accept",
+            },
+          ],
+          {
+            cancelable: true,
+            onDismiss: () => {
+              navigation.navigate("Settings");
+            },
+          }
+        );
+      }
+      console.log("REFRESHED");
+      FetchBloodSugarNumber();
+      GetPointsPerMinute();
+      GetEquippedItem();
+      setFirstLoad(false);
+    }
+  }, []);
 
   useEffect(() => {
     Animated.loop(
@@ -327,10 +425,16 @@ export function GoblinScreen({ navigation }) {
   }, []);
 
   useEffect(() => {
-      console.log("REFRESHED");
-      FetchBloodSugarNumber();
-      GetPointsPerMinute();
+    GetEquippedItem();
+  }, [inventory]);
+
+  useEffect(() => {
+    FetchBloodSugarNumber();
   }, [apiLink]);
+
+  useEffect(() => {
+    GetPointsPerMinute();
+  }, [bloodSugar]);
 
   return (
     <View style={GoblinScreenStyles.container}>
@@ -346,6 +450,20 @@ export function GoblinScreen({ navigation }) {
         <BatheCircle></BatheCircle>
         <StatsCircle></StatsCircle>
       </View>
+      <View>
+      <Animated.Image
+        style={[
+          GoblinScreenStyles.clothingImage,
+          {
+            transform: [
+              { translateY: coolposition.y },
+              { translateX: coolposition.x },
+              { scaleX: animateScaleX },
+            ],
+          },
+        ]}
+        source={equippedItem}
+      ></Animated.Image>
       <Animated.Image
         style={[
           GoblinScreenStyles.goblinImage,
@@ -359,9 +477,11 @@ export function GoblinScreen({ navigation }) {
         ]}
         source={require("./assets/cuteghost.png")}
       ></Animated.Image>
+      </View>
+      
 
       {listType == ListType.NOTHING ? (
-        <View style={{width:'100%', flexGrow:1, alignItems:'center'}}>
+        <View style={{ width: "100%", flexGrow: 1, alignItems: "center" }}>
           <TextInput
             style={GoblinScreenStyles.goblinName}
             onChangeText={setGoblinName}
@@ -432,6 +552,15 @@ const GoblinScreenStyles = StyleSheet.create({
   goblinImage: {
     width: 300,
     height: 300,
+    zIndex:0
+  },
+  clothingImage: {
+    position:'absolute',
+    left:55,
+    bottom: 220,
+    width: 120,
+    height: 100,
+    zIndex:10
   },
   goblinName: {
     fontSize: 30,
