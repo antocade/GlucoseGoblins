@@ -282,14 +282,21 @@ export function GoblinScreen({ navigation }) {
   }
 
   function GetEquippedItem() {
+    let itemEquipped = false;
     for (i = 0; i < jsonInventory.clothing.length; i++) {
       if (jsonInventory.clothing[i].equip == 1) {
         if (jsonInventory.clothing[i].name == "Cowboy Hat") {
           setEquippedItem(clothingImages.image1);
+          itemEquipped = true;
         } else if (jsonInventory.clothing[i].name == "Cool Sunglasses") {
           setEquippedItem(clothingImages.image2);
+          itemEquipped = true;
         }
+        
       }
+    }
+    if(itemEquipped == false){
+      setEquippedItem(null);
     }
     console.log(jsonInventory.clothing);
     console.log(equippedItem);
