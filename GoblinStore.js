@@ -4,13 +4,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const useGoblinStore = create(
   persist(
     (set, get) => ({
-      points: 10000,
+      points: 20000,
       apiLink: "",
       inventory: JSON.stringify(require("./storage.json")),
       bloodSugarUnits: 0,
-      hunger: 100,
-      play: 100,
-      cleanliness: 100,
+      hunger: 50,
+      play: 50,
+      cleanliness: 50,
       goblinName: "Bartholomew",
       increasePoints: (number) =>
         set((state) => ({ points: state.points + number })),
@@ -36,9 +36,9 @@ const useGoblinStore = create(
         set((state) => ({
           points: 10000,
           inventory: JSON.stringify(require("./storage.json")),
-          hunger: 100,
-          play: 100,
-          cleanliness: 100,
+          hunger: 50,
+          play: 50,
+          cleanliness: 50,
         })),
     }),
     {

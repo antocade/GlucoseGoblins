@@ -204,7 +204,7 @@ export function GoblinScreen({ navigation }) {
     let percentage = hunger + "%";
 
     return (
-      <TouchableOpacity onPress={() => setListType(ListType.FOOD)}>
+      <TouchableOpacity style={{zIndex:50}} onPress={() => setListType(ListType.FOOD)}>
         <View style={[GoblinScreenStyles.smallCircle]}>
           <View
             style={[GoblinScreenStyles.circleFill, { height: percentage }]}
@@ -218,8 +218,9 @@ export function GoblinScreen({ navigation }) {
 
   function PlayCircle() {
     let percentage = play + "%";
+
     return (
-      <TouchableOpacity onPress={() => setListType(ListType.TOYS)}>
+      <TouchableOpacity style={{zIndex:50}}  onPress={() => setListType(ListType.TOYS)}>
         <View style={GoblinScreenStyles.smallCircle}>
           <View
             style={[GoblinScreenStyles.circleFill, { height: percentage }]}
@@ -234,7 +235,7 @@ export function GoblinScreen({ navigation }) {
   function BatheCircle() {
     let percentage = cleanliness + "%";
     return (
-      <TouchableOpacity
+      <TouchableOpacity style={{zIndex:50}}
         onPress={() => {
           cleanGoblin();
           Alert.alert(
@@ -466,7 +467,7 @@ export function GoblinScreen({ navigation }) {
         pointsPM={pointsPM}
         bloodSugarUnits={bloodSugarUnits}
       ></BloodSugarCircle>
-      <View style={{ flexDirection: "row", gap: 10 }}>
+      <View style={{ flexDirection: "row", gap: 15 }}>
         <FeedCircle></FeedCircle>
         <PlayCircle></PlayCircle>
         <BatheCircle></BatheCircle>
@@ -578,7 +579,6 @@ const GoblinScreenStyles = StyleSheet.create({
   clothingImage: {
     position: "absolute",
     left: 50,
-
     bottom: 150,
     width: 200,
     height: 200,

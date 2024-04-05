@@ -43,7 +43,7 @@ const mockData = [
     },
     {
       id: '9',
-      itemName: 'Yo-yo',
+      itemName: 'Yo-Yo',
       cost: 400,
       picture: require('./assets/shop3.jpg'), 
       category: 'Toys', 
