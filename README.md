@@ -9,7 +9,7 @@ Glucose Goblins is a React Native app designed to gamify blood sugar management 
 - **Customizable Goblin**: Spend your points to interact with and personalize your goblin.
   
 ## Screenshots
-![Glucose Goblin](assets/"Glucose goblin.png")
+![Glucose Goblin](assets/Glucose-goblin.png)
 
 ## Getting Started
 
