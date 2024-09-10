@@ -26,3 +26,12 @@ Glucose Goblins is a React Native app designed to gamify blood sugar management 
 2. Navigate to the project directory:
    ```bash
    cd glucose-goblins
+3. Install the dependencies
+   ```bash
+   npm start
+### Running the app
+To start the app, run the following command in the project directory:
+  ```bash
+  npm start
+```
+This will open the React Native packager. Follow the instructions in the terminal to run the app on your preferred device/emulator
